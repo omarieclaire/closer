@@ -329,6 +329,11 @@ void ofApp::update() {
     
     // determine which scene we go to
     
+    /*
+     * The triangle speed gets faster as the score rises, making the game more difficult as you play. Had to define it here because can't create variables within a switch statement (why?) 
+     */
+    float triangleSpeedIncrease;
+    
     switch (currScene) {
         case MODE_TITLE_SCREEN:
             if( contourFinder.nBlobs >= 2 ){
@@ -365,7 +370,8 @@ void ofApp::update() {
             /**
              * TRIANGLE MOVEMENT HERE
              */
-            triangleSpeed = ofMap(worldDist, 100, 700, 0.5, 3.0);
+            triangleSpeedIncrease = glowBallCounter/500;
+            triangleSpeed = ofMap(worldDist, 100, 700, 0.5, 3.0) + triangleSpeedIncrease;
             trianglea.moveY(triangleSpeed);
             triangleb.moveY(triangleSpeed);
             trianglec.moveY(triangleSpeed);
