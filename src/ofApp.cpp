@@ -115,8 +115,6 @@ void ofApp::setup() {
     
     modeStartGlowRiseIntimacyFactor = 0.8;
     
-    finalScore = 0.0;
-    
     /**
      * CHANGE DEFAULT VALUES FOR THINGS IN SLIDERS. The first number is the default value.
      * the next numbers are min and max.
@@ -195,30 +193,14 @@ void ofApp::update() {
 
         
         //replace blobcenter with global
-         
-        //!gets global center for each blob, also prints it out
-        worldPoint1 = kinect.getWorldCoordinateAt(blobCenter1.x,blobCenter1.y);
-        worldPoint2 = kinect.getWorldCoordinateAt(blobCenter2.x,blobCenter2.y);
-        
-        blendCenter1 = 0.8 * blendCenter1 + 0.2 * blobCenter1; //worldPoint1;
-        blendCenter2 = 0.8 * blendCenter2 + 0.2 * blobCenter2; //worldPoint2;
-        
-         worldDist = blendCenter1.distance(blendCenter2);
         
         
-        /* in case I fuck it up
-        // tries to "blend" the values so it is less jerky
-        // change the value of blendCenter1:
-        // new value of blendCenter1 = (old value of blendCenter1) + 0.2 * blob
         blendCenter1 = 0.8 * blendCenter1 + 0.2 * blobCenter1;
         blendCenter2 = 0.8 * blendCenter2 + 0.2 * blobCenter2;
         
-        //!gets global center for each blob, also prints it out
-        worldPoint1 = kinect.getWorldCoordinateAt(blobCenter1.x,blobCenter1.y);
-        worldPoint2 = kinect.getWorldCoordinateAt(blobCenter2.x,blobCenter2.y);
-        worldDist = blendCenter1.distance(blendCenter2);
-        */
+        playerDistance = blendCenter1.distance(blendCenter2);
         
+    
         
         // draw circles of mass for each blob
         areaOfBlob1 = contourFinder.blobs[0].area;
@@ -228,11 +210,11 @@ void ofApp::update() {
         
         
         // intimacy threshold
-        if (worldDist <= intimacyThreshold) {
+        if (playerDistance <= intimacyThreshold) {
             
             /**
              * I can change the way intimacy is calcuated here, for example:
-             * intimacyCounter = intimacyCounter + (weight1 * worldDist) + (weight2 * otherThing); 
+             * intimacyCounter = intimacyCounter + (weight1 * playerDistance) + (weight2 * otherThing);
              */
             intimacyCounter++;
             
@@ -254,10 +236,10 @@ void ofApp::update() {
                 glowBallWidth = intimacyCounter * 0.1;
                 glowBall.y = glowBall.y - glowBallRise;
             } else if (currScene == MODE_PLAY) {
-                glowBallRise = worldDist * modePlayGlowRiseFactor;
+                glowBallRise = playerDistance * modePlayGlowRiseFactor;
                 
                 // old value of 30 was good.
-                glowBallWidth = ofMap(worldDist, 100, 700, 200, 20);
+                glowBallWidth = ofMap(playerDistance, 100, 700, 200, 20);
                 //glowBall.y = oldGlowBallY - glowBallRise;
             }
             
@@ -291,36 +273,33 @@ void ofApp::update() {
         
         //SOUND: COUNTER
         
-        soundCounter++;
         if(ofGetFrameNum() % 60 == 0){
-       // if (soundCounter >= 60){
             
             // SOUND: changes speed of sound to match map
-            //synthSpeed = ofMap(worldDist, 100.0f, 1200.0f, 0.2f, 2.5f);
+            //synthSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
             //synth.setSpeed(synthSpeed);
             
-            beatSpeed = ofMap(worldDist, 100.0f, 1200.0f, 2.0f, 0.2f);
+            beatSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 2.0f, 0.2f);
             beat.setSpeed(beatSpeed);
             
-            popSpeed = ofMap(worldDist, 100.0f, 1200.0f, 0.2f, 2.5f);
+            popSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
             pop.setSpeed(popSpeed);
             
             /*
-             synth2Speed = ofMap(worldDist, 100.0f, 1200.0f, 0.2f, 2.5f);
+             synth2Speed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
              synth2.setSpeed(synth2Speed);
              
-             fillSpeed = ofMap(worldDist, 100.0f, 1200.0f, 2.0f, 0.2f);
+             fillSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 2.0f, 0.2f);
              fill.setSpeed(fillSpeed);
              
-             saxSpeed = ofMap(worldDist, 100.0f, 1200.0f, 0.2f, 2.5f);
+             saxSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
              sax.setSpeed(saxSpeed);
              
-             sampleSpeed = ofMap(worldDist, 100.0f, 1200.0f, 2.0f, 0.2f);
+             sampleSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 2.0f, 0.2f);
              sample.setSpeed(sampleSpeed);
              
              */
             
-            soundCounter = 0;
         }
         
     } else {
@@ -365,13 +344,13 @@ void ofApp::update() {
                 //}
             }
             
-            glowBallCounter = glowBallCounter + 0.1;
+            scoreCounter = scoreCounter + 0.1;
             
             /**
              * TRIANGLE MOVEMENT HERE
              */
-            triangleSpeedIncrease = glowBallCounter/500;
-            triangleSpeed = ofMap(worldDist, 100, 700, 0.5, 3.0) + triangleSpeedIncrease;
+            triangleSpeedIncrease = scoreCounter/500;
+            triangleSpeed = ofMap(playerDistance, 100, 700, 0.5, 3.0) + triangleSpeedIncrease;
             trianglea.moveY(triangleSpeed);
             triangleb.moveY(triangleSpeed);
             trianglec.moveY(triangleSpeed);
@@ -413,7 +392,6 @@ void ofApp::update() {
                trianglei.doesIntersect(glowBall, glowBallWidth) ) {
                 badCollision = true;
                 pop.play();
-                finalScore = glowBallRise;
             }
         break;
         case MODE_GAME_OVER:
@@ -429,8 +407,7 @@ void ofApp::update() {
 
 void ofApp::resetGame(){
     
-    distance = 0;
-    worldDist = 0;
+    playerDistance = 0;
     
     //make things smooth
     blendCenter1.set(0,0);
@@ -470,9 +447,8 @@ void ofApp::resetGame(){
     
     
     //count things
-    soundCounter = 0;
     intimacyCounter = 0;
-    glowBallCounter = 0;
+    scoreCounter = 0;
     
     // glowball and intimacy stuff
     glowBallRise = 0;
@@ -521,7 +497,7 @@ void ofApp::draw() {
         //ofDrawBitmapString("START", 100, 50);
 
         // this changes the background colour
-        int bgColor = (int) ofMap(worldDist, 100.0f, 1200.0f, 0, 255);
+        int bgColor = (int) ofMap(playerDistance, 100.0f, 1200.0f, 0, 255);
         ofBackground(bgColor);
         
         // draw from the live kinect
@@ -597,7 +573,7 @@ void ofApp::draw() {
         //GLOWBALL: COUNTER
         
         //ofDrawBitmapString("PLAY", 100, 50);
-        //ofDrawBitmapString("Your Score: " + ofToString( (int) glowBallCounter), 100, 100);
+        //ofDrawBitmapString("Your Score: " + ofToString( (int) scoreCounter), 100, 100);
         
         
 
@@ -648,9 +624,9 @@ void ofApp::draw() {
         }else if(currScene == MODE_GAME_OVER){
             ofBackground(255,255,255);
             ofDrawBitmapString("GAME OVER", 100, 50);
-            ofDrawBitmapString("Your Score: " + ofToString(glowBallCounter), 100, 100);
+            ofDrawBitmapString("Your Score: " + ofToString(scoreCounter), 100, 100);
         
-            //might need to set glowBallCounter to zero here, depending on what happens
+            //might need to set scoreCounter to zero here, depending on what happens
         }
     }
     
@@ -722,11 +698,11 @@ void ofApp::draw() {
             ofDrawBitmapString("for two people || no touching", 50, 100);
             break;
         case MODE_PLAY:
-            ofDrawBitmapString(ofToString( (int) glowBallCounter), 508, 100);
+            ofDrawBitmapString(ofToString( (int) scoreCounter), 508, 100);
             break;
         case MODE_GAME_OVER:
             ofSetColor(255);
-            ofDrawBitmapString("GAME OVER! SCORE: " + ofToString((int) glowBallCounter),50, 100);
+            ofDrawBitmapString("GAME OVER! SCORE: " + ofToString((int) scoreCounter),50, 100);
             ofDrawBitmapString("TRY AGAIN?", 50, 150);
             
             //when in GAME OVER mode, the background is a random grey scale.
@@ -862,34 +838,6 @@ void ofApp::keyPressed (int key) {
 //        case 'R':
 //            currScene = MODE_STANDBY; break;
 	}
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button)
-{
-	
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button)
-{
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button)
-{
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
 }
 
 //--------------------------------------------------------------

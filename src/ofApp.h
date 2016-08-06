@@ -27,45 +27,39 @@
 //#define USE_TWO_KINECTS
 
 class ofApp : public ofBaseApp {
+
 public:
 	
 	void setup();
 	void update();
 	void draw();
 	void exit();
-	
-	void drawPointCloud();
-	
 	void keyPressed(int key);
-	void mouseDragged(int x, int y, int button);
-	void mousePressed(int x, int y, int button);
-	void mouseReleased(int x, int y, int button);
-	void mouseEntered(int x, int y);
-	void mouseExited(int x, int y);
 	void windowResized(int w, int h);
-	
     void resetGame();
-    
+
 	ofxKinect kinect;
 
-	
+
+    // kinect display related
 	ofxCvColorImage colorImg;
-	
 	ofxCvGrayscaleImage grayImage; // grayscale depth image
 	ofxCvGrayscaleImage grayThreshNear; // the near thresholded image
 	ofxCvGrayscaleImage grayThreshFar; // the far thresholded image
-	
-	ofxCvContourFinder contourFinder;
-	
-	bool bThreshWithOpenCV;
-	//int nearThreshold;
-	//int farThreshold;
-    	
-	int angle;
-    float distance;
-    float worldDist;
+
+	ofxCvContourFinder contourFinder; // finding the countour of the players using the kinect
     
+	bool bThreshWithOpenCV; // determining how far away the kinect should look for players
+    int angle; //determines the angle of the kinect
+
+    //scales the drawn image to size
     ofPoint imageScale;
+    
+    //creating control for different "scenes"
+    enum appScene{ MODE_TITLE_SCREEN, MODE_START, MODE_TRANSITION, MODE_PLAY, MODE_GAME_OVER};
+    
+    // current scene
+    appScene currScene;
 
     //for sound player
     ofSoundPlayer beat;
@@ -84,30 +78,31 @@ public:
     float sampleSpeed;
     float popSpeed;
 
+    // distance between the players
+    float playerDistance;
+
     
-    ofPoint blendCenter1;
-    ofPoint blendCenter2;
-    ofVec3f worldPoint1;
-    ofVec3f worldPoint2;
-    
-    bool bDrawDebug;
-    
-    //creating control for different "scenes"
-    enum appScene{ MODE_TITLE_SCREEN, MODE_START, MODE_TRANSITION, MODE_PLAY, MODE_GAME_OVER};
-    appScene currScene;
-    
-    
-    // visuals
+    //center of player blob, unblended
     ofPoint blobCenter1;
     ofPoint blobCenter2;
+    
+    //center of player blob, blended
+    ofPoint blendCenter1;
+    ofPoint blendCenter2;
+    
+    // get area of blob to calculate radius
     float areaOfBlob1;
     float areaOfBlob2;
+    
+    // get radius of blob to draw a circle of that size
     float radiusOfBlob1;
     float radiusOfBlob2;
     
+    // sparkles for each blob
     vector <demoParticle> sparkles;
     vector <demoParticle> sparkles2;
-    
+  
+    // triangles of DEATH
     triangle trianglea;
     triangle triangleb;
     triangle trianglec;
@@ -117,25 +112,39 @@ public:
     triangle triangleg;
     triangle triangleh;
     triangle trianglei;
-
-
- 
-    //counters
-    int soundCounter;
+  
+    // counters
+    // I use intimacy counter for many things (draw, grow, and rise ball in first level, trigger next level. Can't go lower than 0, can't go higher than number of sparkles
     int intimacyCounter;
-    float glowBallCounter;
-    float finalScore;
     
+    // Used to count score
+    float scoreCounter;
+    
+    // keeping the game over screen in place for 3 seconds
+    int timeGameOverSceneStarted;
+    
+    // Number of sparkles used (also used to bound intimacy
     int numSparkles;
     
+    //speed at which glowball rises in the beginning
     float glowBallRise;
     
+    // distance you need to be before the intimacy counter will increase
     float intimacyThreshold;
+    
+    // determines the width of the glowBall based on intimacy counter
     float glowBallWidth;
+    
+    // determines the speed of the triangles, using the scoreCounter
     float triangleSpeed;
     
+    // how you die
     bool badCollision;
+    
+    // postition of glowBall
     ofVec3f glowBall;
+    
+    //WHERE WE STOPPED COMMENTING
     
     // The gui
     ofxPanel gui;
@@ -157,9 +166,8 @@ public:
     void modeStartGlowRiseIntimacyFactorListener (float & intimacyFactor);
     void modePlayGlowRiseFactorListener (float & factor);
     void modePlayGlowballWidthExponentListener ( float & exponent);
+    
+    bool bDrawDebug;
 
-
-    // timers
-    int timeGameOverSceneStarted;
     
 };
