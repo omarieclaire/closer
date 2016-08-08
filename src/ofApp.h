@@ -6,6 +6,8 @@
 #include "ofxGui.h"
 #include "demoParticle.h"
 #include "triangle.h"
+#include "trigrow.hpp"
+#include "level.hpp"
 
 
 // Windows users:
@@ -101,6 +103,9 @@ public:
     // sparkles for each blob
     vector <demoParticle> sparkles;
     vector <demoParticle> sparkles2;
+    
+    // The level (holds triangles)
+    Level level;
   
     // triangles of DEATH
     triangle trianglea;

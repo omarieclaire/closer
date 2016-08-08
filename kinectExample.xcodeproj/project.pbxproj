@@ -19,6 +19,8 @@
 		29E44B66ACF1D336223C6D5F /* demoParticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACEEE5DC9831FFBD95787112 /* demoParticle.cpp */; };
 		311DF864378748129984EA1D /* Kalman.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 77A1A692522820F935B58762 /* Kalman.cpp */; };
 		441C97064451DF676B6C9561 /* triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C1F1104A479D6735570B61 /* triangle.cpp */; };
+		45B5BEA41D57CCDB000C2DB4 /* level.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45B5BEA21D57CCDB000C2DB4 /* level.cpp */; };
+		45B5BEA81D5916C2000C2DB4 /* trigrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45B5BEA61D5916C2000C2DB4 /* trigrow.cpp */; };
 		45CC483A999BF1065A6B926C /* Distance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9DBD717072C35D324E101669 /* Distance.cpp */; };
 		483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78D67A00EB899FAC09430597 /* ofxLabel.cpp */; };
 		49BEEB2DFA5319D55AA6899F /* tilt.c in Sources */ = {isa = PBXBuildFile; fileRef = BF2F2AA872288D30F53983EF /* tilt.c */; };
@@ -144,6 +146,10 @@
 		452417865E4BFB10C9CBF8A2 /* internal.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = internal.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/internal.hpp; sourceTree = SOURCE_ROOT; };
 		4524C0ED0C2DD3E085CE3350 /* ObjectFinder.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ObjectFinder.h; path = ../../../addons/ofxCv/libs/ofxCv/include/ofxCv/ObjectFinder.h; sourceTree = SOURCE_ROOT; };
 		45410DD818BB205166E67E89 /* any.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = any.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/any.h; sourceTree = SOURCE_ROOT; };
+		45B5BEA21D57CCDB000C2DB4 /* level.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = level.cpp; sourceTree = "<group>"; };
+		45B5BEA31D57CCDB000C2DB4 /* level.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = level.hpp; sourceTree = "<group>"; };
+		45B5BEA61D5916C2000C2DB4 /* trigrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = trigrow.cpp; sourceTree = "<group>"; };
+		45B5BEA71D5916C2000C2DB4 /* trigrow.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = trigrow.hpp; sourceTree = "<group>"; };
 		45E004D1064EC5B8C5C40A83 /* ts_perf.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ts_perf.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/ts/ts_perf.hpp; sourceTree = SOURCE_ROOT; };
 		45F38573A0B0DEEC8BBC7A2C /* simplex_downhill.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = simplex_downhill.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/simplex_downhill.h; sourceTree = SOURCE_ROOT; };
 		49EFFCF36CF194CCE0E1FAAB /* kdtree_index.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = kdtree_index.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/kdtree_index.h; sourceTree = SOURCE_ROOT; };
@@ -984,6 +990,10 @@
 				D7B8F35BD0F7FE14E1597FA9 /* demoParticle.h */,
 				F4C1F1104A479D6735570B61 /* triangle.cpp */,
 				B8AF5B92547A8051DF32B691 /* triangle.h */,
+				45B5BEA21D57CCDB000C2DB4 /* level.cpp */,
+				45B5BEA31D57CCDB000C2DB4 /* level.hpp */,
+				45B5BEA61D5916C2000C2DB4 /* trigrow.cpp */,
+				45B5BEA71D5916C2000C2DB4 /* trigrow.hpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1182,7 +1192,9 @@
 				B56FE57CC35806596D38118C /* ofxSliderGroup.cpp in Sources */,
 				1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */,
 				7ADB04AF67C568EAFAEBA546 /* ofxKinectExtras.cpp in Sources */,
+				45B5BEA41D57CCDB000C2DB4 /* level.cpp in Sources */,
 				686B0DF6249B52E1A85B39EC /* ofxKinect.cpp in Sources */,
+				45B5BEA81D5916C2000C2DB4 /* trigrow.cpp in Sources */,
 				0F8F016776681D468C0D0949 /* audio.c in Sources */,
 				ACE7DC9A3223ED5EE1B80074 /* cameras.c in Sources */,
 				F4135EEFC911E9ED211FB6F9 /* core.c in Sources */,

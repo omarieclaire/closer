@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include "math.h"
+#include "level.hpp"
 
 /*
     If you are struggling to get the device to connect ( especially Windows Users )
@@ -351,16 +352,8 @@ void ofApp::update() {
              */
             triangleSpeedIncrease = scoreCounter/500;
             triangleSpeed = ofMap(playerDistance, 100, 700, 0.5, 3.0) + triangleSpeedIncrease;
-            trianglea.moveY(triangleSpeed);
-            triangleb.moveY(triangleSpeed);
-            trianglec.moveY(triangleSpeed);
-            triangled.moveY(triangleSpeed);
-            trianglee.moveY(triangleSpeed);
-            trianglef.moveY(triangleSpeed);
-            triangleg.moveY(triangleSpeed);
-            triangleh.moveY(triangleSpeed);
-            trianglei.moveY(triangleSpeed);
-            
+            level.moveY(triangleSpeed);
+
             //calculates all sparkle attract points
             for(unsigned int p = 0; p < sparkles.size() ; p++) {
                 if (p < intimacyCounter) {
@@ -381,18 +374,11 @@ void ofApp::update() {
                 sparkles2[p].update();
             }
             
-            if(trianglea.doesIntersect(glowBall, glowBallWidth) ||
-               triangleb.doesIntersect(glowBall, glowBallWidth) ||
-               trianglec.doesIntersect(glowBall, glowBallWidth) ||
-               triangled.doesIntersect(glowBall, glowBallWidth) ||
-               trianglee.doesIntersect(glowBall, glowBallWidth) ||
-               trianglef.doesIntersect(glowBall, glowBallWidth) ||
-               triangleg.doesIntersect(glowBall, glowBallWidth) ||
-               triangleh.doesIntersect(glowBall, glowBallWidth) ||
-               trianglei.doesIntersect(glowBall, glowBallWidth) ) {
+            if(level.doesIntersect(glowBall,glowBallWidth)) {
                 badCollision = true;
                 pop.play();
             }
+
         break;
         case MODE_GAME_OVER:
             if(ofGetElapsedTimeMillis() - timeGameOverSceneStarted > 3*1000){
@@ -414,7 +400,6 @@ void ofApp::resetGame(){
     blendCenter2.set(0,0);
     
     //Set the scene (don't need to otherwise setup
-    //    { MODE STANDBY, MODE_START, MODE_PLAY, MODE_GAME_OVER}
     currScene = MODE_TITLE_SCREEN;
     
     // Reset the sparkles
@@ -432,19 +417,41 @@ void ofApp::resetGame(){
      * parameters are:
      * GAP | HEIGHT | WIDTH | PEAK HEIGHT
      */
-    trianglea.setPoints(ofPoint(0,-100), ofPoint(200,-250), ofPoint(0,-500));
-    triangleb.setPoints(ofPoint(ofGetScreenWidth(),-100), ofPoint(ofGetScreenWidth()-600,-250),ofPoint(ofGetScreenWidth(),-400));
-    trianglec.setPoints(trianglea, 50, 150, 400, 150);
-    triangled.setPoints(triangleb, 50, 150, -550, 150);
-    trianglee.setPoints(trianglec, 50, 250, 450, 250);
-    trianglef.setPoints(triangled, 50, 250, -600, 250);
-    triangleg.setPoints(trianglee, 50, 300, 550, 250);
-    triangleh.setPoints(trianglef, 50, 300, -700, 250);
-    trianglei.setPoints(triangleg, 50, 350, 650, 300);
-    
- 
-    //trianglea.setColor(0,255,255);
-    
+    float screenHeight = ofGetScreenHeight();
+    level.setHeight(26586);
+    level.setScreenHeight(screenHeight);
+    level.clearTriangles();
+    level.addTriangle(triangle(ofPoint(0,25256 - 26586 - screenHeight), 700, 256, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,24092 - 26586 - screenHeight), 716, 420, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,22652 - 26586 - screenHeight), 720, 512, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,21316 - 26586 - screenHeight), 948, 676, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,18932 - 26586 - screenHeight), 1328, 932, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,16672 - 26586 - screenHeight), 1372, 972, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,15712 - 26586 - screenHeight), 644, 436, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,13680 - 26586 - screenHeight), 756, 532, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,11664 - 26586 - screenHeight), 1004, 700, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,10420 - 26586 - screenHeight), 628, 424, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,8852 - 26586 - screenHeight), 1248, 884, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,6888 - 26586 - screenHeight), 1260, 892, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,5812 - 26586 - screenHeight), 1224, 888, triangle::RIGHT));
+    level.addTriangle(trigrow(ofPoint(0,4392 - 26586 - screenHeight), 500, 350, 600, triangle::RIGHT));
+    level.addTriangle(trigrow(ofPoint(0,2576 - 26586 - screenHeight), 780, 540, 700,triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,26072 - 26586 - screenHeight), 340, 96, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,24620 - 26586 - screenHeight), 720, 256, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,23396 - 26586 - screenHeight), 708, 436, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,22092 - 26586 - screenHeight), 628, 424, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,20236 - 26586 - screenHeight), 928, 617, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,17952 - 26586 - screenHeight), 1180, 792, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,15644 - 26586 - screenHeight), 1188, 796, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,14280 - 26586 - screenHeight), 1200, 816, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,13048 - 26586 - screenHeight), 1168, 808, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,11244 - 26586 - screenHeight), 1036, 720, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,10240 - 26586 - screenHeight), 912, 616, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,8436 - 26586 - screenHeight), 828, 548, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,6688 - 26586 - screenHeight), 793, 536, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(0,4304 - 26586 - screenHeight), 1216, 808, triangle::LEFT));
+    level.addTriangle(trigrow(ofPoint(0,3780 - 26586 - screenHeight), 1016, 708, 800, triangle::LEFT));
+    level.addTriangle(trigrow(ofPoint(0,2536 - 26586 - screenHeight), 808, 564, 700, triangle::LEFT));
     
     //count things
     intimacyCounter = 0;
@@ -503,7 +510,7 @@ void ofApp::draw() {
         // draw from the live kinect
         //kinect.drawDepth(0, 0, ofGetWidth(), ofGetHeight());//, 400, 300);
         //kinect.draw(420, 10, 400, 300);
-        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight());
+        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false);
         //contourFinder.draw(10, 320, 400, 300);
         //grayImage.draw(0,0);
         ofEasyCam easyCam;
@@ -575,18 +582,7 @@ void ofApp::draw() {
         //ofDrawBitmapString("PLAY", 100, 50);
         //ofDrawBitmapString("Your Score: " + ofToString( (int) scoreCounter), 100, 100);
         
-        
-
-        trianglea.draw();
-        triangleb.draw();
-        trianglec.draw();
-        triangled.draw();
-        trianglee.draw();
-        trianglef.draw();
-        triangleg.draw();
-        triangleh.draw();
-        trianglei.draw();
-
+        level.draw();
         
         ofSetColor(255,80);
         ofDrawCircle(glowBall.x, glowBall.y, glowBallWidth);
@@ -633,7 +629,7 @@ void ofApp::draw() {
     
     if (bDrawDebug == true) {
         grayImage.draw(0,0,320,240);
-        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight());
+        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false);
     }
     
     
@@ -737,11 +733,11 @@ void ofApp::keyPressed (int key) {
     
 	switch (key) {
 		case '?':
-            ofSetWindowPosition(-1,-40); break;
+            ofSetWindowPosition(-1,-40);
+            break;
         case ' ':
 			bThreshWithOpenCV = !bThreshWithOpenCV;
 			break;
-			
 		case '>':
 		case '.':
 			farThreshold ++;
@@ -835,8 +831,9 @@ void ofApp::keyPressed (int key) {
         case '@':
             currScene = MODE_GAME_OVER;
             break;
-//        case 'R':
-//            currScene = MODE_STANDBY; break;
+        case 'R':
+            currScene = MODE_START;
+            break;
 	}
 }
 

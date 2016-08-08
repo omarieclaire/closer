@@ -13,26 +13,34 @@
 #define triangle_h
 
 class triangle{
-  
-    public:
-        triangle();
-        triangle(ofPoint x, ofPoint y, ofPoint z);
-        void setPoints(ofPoint d, ofPoint e, ofPoint f);
-        void setPoints(triangle t, float gap, float height, float width, float peakHeight);
-        void draw();
-        bool doesIntersect (ofPoint center, float radius);
-        void setColor(int r, int g, int b);
-        void moveY(float amount);
+    
+public:
+    enum direction{ LEFT, RIGHT };
+    triangle();
+    triangle(ofPoint x, ofPoint y, ofPoint z);
+    triangle(ofPoint top, float h, float w, direction d);
+    void setPoints(ofPoint d, ofPoint e, ofPoint f);
+    void setPoints(triangle t, float gap, float height, float width, float peakHeight);
+    void setPoints(ofPoint top, float h, float w, direction d);
+    void draw();
+    bool doesIntersect (ofPoint center, float radius);
+    bool outOfScreen(int screenHeight);
+    void setColor(int r, int g, int b);
+    void moveY(float amount);
+    void moveY(float amount, int screenHeight, int levelHeight);
     
     
+    /**
+     * we assume a is the "top" of the triangle
+     * this is important for wrapping.
+     */
+    ofPoint a;
+    ofPoint b;
+    ofPoint c;
     
-        ofPoint a;
-        ofPoint b;
-        ofPoint c;
-
-        int red;
-        int green;
-        int blue;
+    int red;
+    int green;
+    int blue;
 };
 
 
