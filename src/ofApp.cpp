@@ -11,7 +11,7 @@
 void ofApp::setup() {
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	
-   
+    
 	// enable depth->video image calibration
 	kinect.setRegistration(true);
     
@@ -22,7 +22,7 @@ void ofApp::setup() {
 	kinect.open();		// opens first available kinect
 	//kinect.open(1);	// open a kinect by id, starting with 0 (sorted by serial # lexicographically))
 	//kinect.open("A00362A08602047A");	// open a kinect using it's unique serial #
-	
+    
 	// print the intrinsic IR sensor values
 	if(kinect.isConnected()) {
 		ofLogNotice() << "sensor-emitter dist: " << kinect.getSensorEmitterDistance() << "cm";
@@ -46,6 +46,9 @@ void ofApp::setup() {
 // zero the tilt on startup
 	angle = 0;
 //	kinect.setCameraTiltAngle(angle);
+    
+    font.load("Ayuthaya", 14);
+
     
 //sound
     
@@ -181,6 +184,7 @@ void ofApp::update() {
     
     //find how many blobs there are?
     if(contourFinder.nBlobs > 0 ){
+        
         //get blob center
         blobCenter1 = contourFinder.blobs[0].centroid * imageScale;
         blobCenter2 = contourFinder.blobs[1].centroid * imageScale;
@@ -195,13 +199,10 @@ void ofApp::update() {
         
         //replace blobcenter with global
         
-        
         blendCenter1 = 0.8 * blendCenter1 + 0.2 * blobCenter1;
         blendCenter2 = 0.8 * blendCenter2 + 0.2 * blobCenter2;
         
         playerDistance = blendCenter1.distance(blendCenter2);
-        
-    
         
         // draw circles of mass for each blob
         areaOfBlob1 = contourFinder.blobs[0].area;
@@ -231,23 +232,22 @@ void ofApp::update() {
         // calculates the glowBall position
         float oldGlowBallY = glowBall.y;
         glowBall = blobCenter1.getMiddle(blobCenter2);
-        if (intimacyCounter >= 100) {
-            if (currScene == MODE_START) {
+        
+        if(currScene == MODE_START) {
+            if(intimacyCounter >= 100) {
                 glowBallRise = intimacyCounter * modeStartGlowRiseIntimacyFactor;
                 glowBallWidth = intimacyCounter * 0.1;
                 glowBall.y = glowBall.y - glowBallRise;
-            } else if (currScene == MODE_PLAY) {
-                glowBallRise = playerDistance * modePlayGlowRiseFactor;
-                
-                // old value of 30 was good.
-                glowBallWidth = ofMap(playerDistance, 100, 700, 200, 20);
-                //glowBall.y = oldGlowBallY - glowBallRise;
             }
+        } else if (currScene == MODE_PLAY) {
+            glowBallRise = playerDistance * modePlayGlowRiseFactor;
             
+            // old value of 30 was good.
+            glowBallWidth = ofMap(playerDistance, 100, 700, 200, 5, true);
         } else {
             glowBallRise = 0;
         }
-
+        
         //calculates all sparkle attract points>>>>>
         for(unsigned int p = 0; p < sparkles.size() ; p++) {
             
@@ -411,6 +411,8 @@ void ofApp::resetGame(){
         sparkles2[i].reset();
     }
     
+    float screenWidth = ofGetScreenWidth();
+    
     /**
      * Setup triangles
      * void triangle::setPoints(triangle t, float gap, float height, float width, float peakHeight)
@@ -421,37 +423,38 @@ void ofApp::resetGame(){
     level.setHeight(26586);
     level.setScreenHeight(screenHeight);
     level.clearTriangles();
-    level.addTriangle(triangle(ofPoint(0,25256 - 26586 - screenHeight), 700, 256, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,24092 - 26586 - screenHeight), 716, 420, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,22652 - 26586 - screenHeight), 720, 512, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,21316 - 26586 - screenHeight), 948, 676, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,18932 - 26586 - screenHeight), 1328, 932, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,16672 - 26586 - screenHeight), 1372, 972, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,15712 - 26586 - screenHeight), 644, 436, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,13680 - 26586 - screenHeight), 756, 532, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,11664 - 26586 - screenHeight), 1004, 700, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,10420 - 26586 - screenHeight), 628, 424, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,8852 - 26586 - screenHeight), 1248, 884, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,6888 - 26586 - screenHeight), 1260, 892, triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,5812 - 26586 - screenHeight), 1224, 888, triangle::RIGHT));
-    level.addTriangle(trigrow(ofPoint(0,4392 - 26586 - screenHeight), 500, 350, 600, triangle::RIGHT));
-    level.addTriangle(trigrow(ofPoint(0,2576 - 26586 - screenHeight), 780, 540, 700,triangle::RIGHT));
-    level.addTriangle(triangle(ofPoint(0,26072 - 26586 - screenHeight), 340, 96, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,24620 - 26586 - screenHeight), 720, 256, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,23396 - 26586 - screenHeight), 708, 436, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,22092 - 26586 - screenHeight), 628, 424, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,20236 - 26586 - screenHeight), 928, 617, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,17952 - 26586 - screenHeight), 1180, 792, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,15644 - 26586 - screenHeight), 1188, 796, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,14280 - 26586 - screenHeight), 1200, 816, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,13048 - 26586 - screenHeight), 1168, 808, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,11244 - 26586 - screenHeight), 1036, 720, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,10240 - 26586 - screenHeight), 912, 616, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,8436 - 26586 - screenHeight), 828, 548, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,6688 - 26586 - screenHeight), 793, 536, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(0,4304 - 26586 - screenHeight), 1216, 808, triangle::LEFT));
-    level.addTriangle(trigrow(ofPoint(0,3780 - 26586 - screenHeight), 1016, 708, 800, triangle::LEFT));
-    level.addTriangle(trigrow(ofPoint(0,2536 - 26586 - screenHeight), 808, 564, 700, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,25256 - 26586 - screenHeight), 700, 256, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,24092 - 26586 - screenHeight), 716, 420, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,22652 - 26586 - screenHeight), 720, 512, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,21316 - 26586 - screenHeight), 948, 676, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,18932 - 26586 - screenHeight), 1328, 932, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,16672 - 26586 - screenHeight), 1372, 972, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,15712 - 26586 - screenHeight), 644, 436, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,13680 - 26586 - screenHeight), 756, 532, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,11664 - 26586 - screenHeight), 1004, 700, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,10420 - 26586 - screenHeight), 628, 424, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,8852 - 26586 - screenHeight), 1248, 884, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,6888 - 26586 - screenHeight), 1260, 892, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,5812 - 26586 - screenHeight), 1224, 888, triangle::LEFT));
+    level.addTriangle(trigrow(ofPoint(screenWidth,4392 - 26586 - screenHeight), 500, 350, 600, triangle::LEFT));
+    level.addTriangle(trigrow(ofPoint(screenWidth,2576 - 26586 - screenHeight), 780, 540, 700,triangle::LEFT));
+    //
+    level.addTriangle(triangle(ofPoint(0,26072 - 26586 - screenHeight), 340, 96, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,24620 - 26586 - screenHeight), 720, 256, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,23396 - 26586 - screenHeight), 708, 436, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,22092 - 26586 - screenHeight), 628, 424, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,20236 - 26586 - screenHeight), 928, 617, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,17952 - 26586 - screenHeight), 1180, 792, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,15644 - 26586 - screenHeight), 1188, 796, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,14280 - 26586 - screenHeight), 1200, 816, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,13048 - 26586 - screenHeight), 1168, 808, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,11244 - 26586 - screenHeight), 1036, 720, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,10240 - 26586 - screenHeight), 912, 616, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,8436 - 26586 - screenHeight), 828, 548, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,6688 - 26586 - screenHeight), 793, 536, triangle::RIGHT));
+    level.addTriangle(triangle(ofPoint(0,4304 - 26586 - screenHeight), 1216, 808, triangle::RIGHT));
+    level.addTriangle(trigrow(ofPoint(0,3780 - 26586 - screenHeight), 1016, 708, 800, triangle::RIGHT));
+    level.addTriangle(trigrow(ofPoint(0,2536 - 26586 - screenHeight), 808, 564, 700, triangle::RIGHT));
     
     //count things
     intimacyCounter = 0;
@@ -478,29 +481,9 @@ void ofApp::draw() {
     // draw depending on scene
     if(currScene == MODE_TITLE_SCREEN){
         ofSetBackgroundColor(0, 0, 0);
-        
-        //ofDrawBitmapString("STANDBY :: CLOSER (for two people || no touching)", 100, 50);
-     
-        
-    /*
-        if(contourFinder.nBlobs == 1 ){
-            if(ofGetElapsedTimef() >= 3){
-            ofDrawBitmapString("CLOSER [for two people (you are alone) || no touching]", 100, 50);
-            
-        } else if (contourFinder.nBlobs > 2 )
-            if(ofGetElapsedTimef() >= 3){
-            ofDrawBitmapString("CLOSER [for two people (too many people) || no  touching]", 100, 50);
-        }
-            
-        } else if (contourFinder.nBlobs == 2 )
-            ofDrawBitmapString("CLOSER || no touching]", 100, 50);
-            currScene = MODE_START;
-            
-        }
-    */
 
-//START MODE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    }else if(currScene == MODE_START){
+    //START MODE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    } else if(currScene == MODE_START){
         //ofDrawBitmapString("START", 100, 50);
 
         // this changes the background colour
@@ -611,9 +594,6 @@ void ofApp::draw() {
         ofDrawLine(0, 20, ofGetScreenWidth(), 20);
         
         if (glowBall.y <= 20) {
- //           ofDrawTriangle(ofGetScreenWidth()/2+20,10,ofGetScreenWidth()/2+60,40,ofGetScreenWidth()/2-60,40);
-        
-        
         
 //GAME OVER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         
@@ -626,10 +606,10 @@ void ofApp::draw() {
         }
     }
     
+    contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false);
     
     if (bDrawDebug == true) {
         grayImage.draw(0,0,320,240);
-        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false);
     }
     
     
@@ -683,15 +663,10 @@ void ofApp::draw() {
     
     switch(currScene ) {
         case MODE_TITLE_SCREEN:
-            ofDrawBitmapString("CLOSER", 50, 50);
-            ofDrawBitmapString("for two people || no touching", 50, 100);
-
-
-            
+            font.drawString("\n\n CLOSER\n\n for two people || no touching\n\n", ofGetScreenWidth()/3, 50);
             break;
         case MODE_START:
-            ofDrawBitmapString("CLOSER", 50, 50);
-            ofDrawBitmapString("for two people || no touching", 50, 100);
+            font.drawString("\n\n CLOSER\n\n for two people || no touching\n\n", ofGetScreenWidth()/3, 50);
             break;
         case MODE_PLAY:
             ofDrawBitmapString(ofToString( (int) scoreCounter), 508, 100);
@@ -779,11 +754,11 @@ void ofApp::keyPressed (int key) {
             bDrawDebug = !bDrawDebug;
             break;
             
-        case 'f':
+       // case 'f':
             ofToggleFullscreen();
             ///ofHideCursor();
             //bDrawDebug = false;
-            break;
+       //     break;
             
         case 'g':
             hideGui = !hideGui;

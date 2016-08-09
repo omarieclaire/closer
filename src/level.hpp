@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "triangle.h"
+#include "trigrow.hpp"
 #include "ofMain.h"
 
 class Level {

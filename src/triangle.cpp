@@ -81,11 +81,15 @@ void triangle::setPoints(ofPoint top, float height, float width, direction dir) 
     b.y = top.y + height / 2;
     c.x = top.x;
     c.y = top.y + height;
+    
+    red = 255;
+    green = 255;
+    blue = 255;
 }
 
 
 void triangle::draw(){
-    ofSetColor(red, green, blue);
+    ofSetColor(red, green, blue,80);
     ofDrawTriangle(a.x, a.y, b.x, b.y, c.x, c.y);
 
 }

@@ -173,6 +173,9 @@ public:
     void modePlayGlowballWidthExponentListener ( float & exponent);
     
     bool bDrawDebug;
+    
+    ofTrueTypeFont font;
+
 
     
 };
