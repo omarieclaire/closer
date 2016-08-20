@@ -29,6 +29,8 @@ public:
     void moveY(float amount);
     void moveY(float amount, int screenHeight, int levelHeight);
     
+    ofPoint peak();
+    
     
     /**
      * we assume a is the "top" of the triangle

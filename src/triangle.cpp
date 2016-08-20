@@ -87,6 +87,10 @@ void triangle::setPoints(ofPoint top, float height, float width, direction dir) 
     blue = 255;
 }
 
+ofPoint triangle::peak() {
+    return b;
+}
+
 
 void triangle::draw(){
     ofSetColor(red, green, blue,80);

@@ -47,7 +47,7 @@ void ofApp::setup() {
 	angle = 0;
 //	kinect.setCameraTiltAngle(angle);
     
-    font.load("Ayuthaya", 14);
+    font.load("Ayuthaya", 30);
 
     
 //sound
@@ -381,7 +381,7 @@ void ofApp::update() {
 
         break;
         case MODE_GAME_OVER:
-            if(ofGetElapsedTimeMillis() - timeGameOverSceneStarted > 3*1000){
+            if(ofGetElapsedTimeMillis() - timeGameOverSceneStarted > 5*1000){
                 
                 //ofGetElapsedTimef() >= 8){
                 resetGame();
@@ -405,10 +405,12 @@ void ofApp::resetGame(){
     // Reset the sparkles
     for(unsigned int i = 0 ; i < sparkles.size() ; i++) {
         sparkles[i].reset();
+        sparkles[i].setMode(PARTICLE_MODE_ATTRACT);
     }
     
     for(unsigned int i = 0 ; i < sparkles2.size() ; i++) {
         sparkles2[i].reset();
+        sparkles2[i].setMode(PARTICLE_MODE_ATTRACT);
     }
     
     float screenWidth = ofGetScreenWidth();
@@ -423,12 +425,13 @@ void ofApp::resetGame(){
     level.setHeight(26586);
     level.setScreenHeight(screenHeight);
     level.clearTriangles();
+    level.clearStars();
     level.addTriangle(triangle(ofPoint(screenWidth,25256 - 26586 - screenHeight), 700, 256, triangle::LEFT));
     level.addTriangle(triangle(ofPoint(screenWidth,24092 - 26586 - screenHeight), 716, 420, triangle::LEFT));
     level.addTriangle(triangle(ofPoint(screenWidth,22652 - 26586 - screenHeight), 720, 512, triangle::LEFT));
     level.addTriangle(triangle(ofPoint(screenWidth,21316 - 26586 - screenHeight), 948, 676, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(screenWidth,18932 - 26586 - screenHeight), 1328, 932, triangle::LEFT));
-    level.addTriangle(triangle(ofPoint(screenWidth,16672 - 26586 - screenHeight), 1372, 972, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,18932 - 26586 - screenHeight), 1328, 850, triangle::LEFT));
+    level.addTriangle(triangle(ofPoint(screenWidth,16672 - 26586 - screenHeight), 1372, 900, triangle::LEFT));
     level.addTriangle(triangle(ofPoint(screenWidth,15712 - 26586 - screenHeight), 644, 436, triangle::LEFT));
     level.addTriangle(triangle(ofPoint(screenWidth,13680 - 26586 - screenHeight), 756, 532, triangle::LEFT));
     level.addTriangle(triangle(ofPoint(screenWidth,11664 - 26586 - screenHeight), 1004, 700, triangle::LEFT));
@@ -455,6 +458,9 @@ void ofApp::resetGame(){
     level.addTriangle(triangle(ofPoint(0,4304 - 26586 - screenHeight), 1216, 808, triangle::RIGHT));
     level.addTriangle(trigrow(ofPoint(0,3780 - 26586 - screenHeight), 1016, 708, 800, triangle::RIGHT));
     level.addTriangle(trigrow(ofPoint(0,2536 - 26586 - screenHeight), 808, 564, 700, triangle::RIGHT));
+    
+    // Create the stars based on the locations of the triangles.
+    level.createStars();
     
     //count things
     intimacyCounter = 0;
@@ -599,8 +605,8 @@ void ofApp::draw() {
         
         }else if(currScene == MODE_GAME_OVER){
             ofBackground(255,255,255);
-            ofDrawBitmapString("GAME OVER", 100, 50);
-            ofDrawBitmapString("Your Score: " + ofToString(scoreCounter), 100, 100);
+ //           ofDrawBitmapString("GAME OVER", 100, 50);
+ //           ofDrawBitmapString("Your Score: " + ofToString(scoreCounter), 100, 100);
         
             //might need to set scoreCounter to zero here, depending on what happens
         }
@@ -661,24 +667,50 @@ void ofApp::draw() {
      */
     int randomNum;
     
+    string title = "\n\n CLOSER";
+    string introMsg = "\n\n for two people || no touching\n\n";
+    string gameOverMsg = "";
+    
     switch(currScene ) {
         case MODE_TITLE_SCREEN:
-            font.drawString("\n\n CLOSER\n\n for two people || no touching\n\n", ofGetScreenWidth()/3, 50);
+            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 300);
+            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 350);
             break;
         case MODE_START:
-            font.drawString("\n\n CLOSER\n\n for two people || no touching\n\n", ofGetScreenWidth()/3, 50);
+            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 300);
+            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 350);
             break;
         case MODE_PLAY:
-            ofDrawBitmapString(ofToString( (int) scoreCounter), 508, 100);
+            font.drawString(ofToString( (int) scoreCounter), ofGetScreenWidth()/2 - font.stringWidth(std::to_string(scoreCounter))/2, 50);
             break;
         case MODE_GAME_OVER:
             ofSetColor(255);
-            ofDrawBitmapString("GAME OVER! SCORE: " + ofToString((int) scoreCounter),50, 100);
-            ofDrawBitmapString("TRY AGAIN?", 50, 150);
+            gameOverMsg = "GAME OVER! SCORE: " + ofToString((int) scoreCounter);
+
+            font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 100);
+            font.drawString("TRY AGAIN?", ofGetScreenWidth()/2 - font.stringWidth("TRY AGAIN?")/2, 150);
             
             //when in GAME OVER mode, the background is a random grey scale.
             randomNum = (int) ofRandom(0,255);
             ofSetBackgroundColor(randomNum, randomNum, randomNum);
+            ofSetBackgroundColor(0, 0, 0);
+            
+            //calculates all sparkle attract points>>>>>
+            for(unsigned int p = 0; p < sparkles.size() ; p++) {
+                
+                sparkles[p].setMode(PARTICLE_MODE_REPEL);
+                sparkles[p].draw();
+            }
+            
+            //calculates all sparkle attract points
+            for(unsigned int p = 0; p < sparkles2.size() ; p++) {
+                
+                sparkles2[p].setMode(PARTICLE_MODE_REPEL);
+                sparkles2[p].draw();
+                
+            }
+
+            
             
             break;
         case MODE_TRANSITION:

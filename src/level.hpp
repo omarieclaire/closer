@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "triangle.h"
 #include "trigrow.hpp"
+#include "star.hpp"
 #include "ofMain.h"
 
 class Level {
@@ -22,10 +23,13 @@ public:
     void setHeight(int h);
     void setScreenHeight(int sh);
     void clearTriangles();
+    void clearStars();
     void addTriangle(triangle t);
+    void createStars();
     bool doesIntersect(ofPoint center, float radius);
     
     vector<triangle> triangles;
+    vector<star> stars;
     void draw();
     void moveY(float amount);
     
