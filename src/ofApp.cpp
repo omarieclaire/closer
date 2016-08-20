@@ -134,6 +134,8 @@ void ofApp::setup() {
     modePlayGlowRiseFactorSlider.addListener(this, &ofApp::modePlayGlowballWidthExponentListener);
 
     timeGameOverSceneStarted = 0;
+    
+    highScore = 0;
 }
 
 //-------------------- GUI LISTENERS ---------------------------
@@ -381,9 +383,12 @@ void ofApp::update() {
 
         break;
         case MODE_GAME_OVER:
+            if (!newHighScore && scoreCounter > highScore){
+                newHighScore = true;
+                highScore = scoreCounter;
+            }
+            
             if(ofGetElapsedTimeMillis() - timeGameOverSceneStarted > 5*1000){
-                
-                //ofGetElapsedTimef() >= 8){
                 resetGame();
                 currScene = MODE_TITLE_SCREEN;
             }
@@ -465,6 +470,7 @@ void ofApp::resetGame(){
     //count things
     intimacyCounter = 0;
     scoreCounter = 0;
+    newHighScore = false;
     
     // glowball and intimacy stuff
     glowBallRise = 0;
@@ -605,10 +611,7 @@ void ofApp::draw() {
         
         }else if(currScene == MODE_GAME_OVER){
             ofBackground(255,255,255);
- //           ofDrawBitmapString("GAME OVER", 100, 50);
- //           ofDrawBitmapString("Your Score: " + ofToString(scoreCounter), 100, 100);
         
-            //might need to set scoreCounter to zero here, depending on what happens
         }
     }
     
@@ -619,7 +622,6 @@ void ofApp::draw() {
     }
     
     
-//END MY STUFF+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // draw instructions
 
     
@@ -670,6 +672,8 @@ void ofApp::draw() {
     string title = "\n\n CLOSER";
     string introMsg = "\n\n for two people || no touching\n\n";
     string gameOverMsg = "";
+    string highScoreMsg = "";
+    string newHighScoreMsg = "";
     
     switch(currScene ) {
         case MODE_TITLE_SCREEN:
@@ -685,10 +689,18 @@ void ofApp::draw() {
             break;
         case MODE_GAME_OVER:
             ofSetColor(255);
-            gameOverMsg = "GAME OVER! SCORE: " + ofToString((int) scoreCounter);
+            gameOverMsg = "GAME OVER! YOUR SCORE: " + ofToString((int) scoreCounter);
+            highScoreMsg = "HIGH SCORE " + ofToString((int) highScore);
+            newHighScoreMsg = "NEW HIGH SCORE!!!";
 
-            font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 100);
-            font.drawString("TRY AGAIN?", ofGetScreenWidth()/2 - font.stringWidth("TRY AGAIN?")/2, 150);
+
+            font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 300);
+            font.drawString(highScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(highScoreMsg)/2, 350);
+            if (newHighScore) {
+                font.drawString(newHighScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(newHighScoreMsg)/2, 400);
+            }
+            
+            font.drawString("TRY AGAIN?", ofGetScreenWidth()/2 - font.stringWidth("TRY AGAIN?")/2, 450);
             
             //when in GAME OVER mode, the background is a random grey scale.
             randomNum = (int) ofRandom(0,255);

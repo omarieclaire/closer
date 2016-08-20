@@ -125,6 +125,12 @@ public:
     // Used to count score
     float scoreCounter;
     
+    // Used to store highest score
+    float highScore;
+    
+    // Used to identify a new high scorer
+    bool newHighScore;
+    
     // keeping the game over screen in place for 3 seconds
     int timeGameOverSceneStarted;
     
