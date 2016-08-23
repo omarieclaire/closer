@@ -47,7 +47,7 @@ void ofApp::setup() {
 	angle = 0;
 //	kinect.setCameraTiltAngle(angle);
     
-    font.load("Ayuthaya", 30);
+    font.load("Ayuthaya", 25);
 
     
 //sound
@@ -67,23 +67,17 @@ void ofApp::setup() {
     beat.setMultiPlay(true);
     beat.play();
     
-    /*
-    synth2.load("sounds/synth4.wav");
-    synth2.setLoop(true);
-    synth2.setVolume(0.0f);
-    synth.setSpeed(1.0f);
-    synth2.setMultiPlay(true);
-    synth2.play();
 
-    
-    fill.load("sounds/synth3.mp3");
-    fill.setLoop(false);
+    synth2.load("sounds/closerPoint.mp3");
+    synth2.setVolume(1.0f);
+    synth.setSpeed(1.0f);
+
+
+    fill.load("sounds/death2.mp3");
     fill.setVolume(0.50f);
     fill.setSpeed(1.0f);
-    fill.setMultiPlay(true);
-    fill.play();
 
-    
+ /*
     sax.load("sounds/synth3.mp3");
     sax.setLoop(false);
     sax.setVolume(0.75f);
@@ -216,10 +210,6 @@ void ofApp::update() {
         // intimacy threshold
         if (playerDistance <= intimacyThreshold) {
             
-            /**
-             * I can change the way intimacy is calcuated here, for example:
-             * intimacyCounter = intimacyCounter + (weight1 * playerDistance) + (weight2 * otherThing);
-             */
             intimacyCounter++;
             
             if (intimacyCounter > numSparkles)
@@ -244,7 +234,6 @@ void ofApp::update() {
         } else if (currScene == MODE_PLAY) {
             glowBallRise = playerDistance * modePlayGlowRiseFactor;
             
-            // old value of 30 was good.
             glowBallWidth = ofMap(playerDistance, 100, 700, 200, 5, true);
         } else {
             glowBallRise = 0;
@@ -340,6 +329,7 @@ void ofApp::update() {
         case MODE_PLAY:
             if( badCollision == true){
                 pop.play();
+                fill.play();
                 //if(ofGetElapsedTimef() >= 0){
                     currScene = MODE_GAME_OVER;
                     timeGameOverSceneStarted = ofGetElapsedTimeMillis();
@@ -377,8 +367,9 @@ void ofApp::update() {
             }
             
             if(level.doesIntersectStar(glowBall, glowBallWidth)) {
-                pop.play();
-                scoreCounter += 50;
+                synth2.play();
+                scoreCounter += 100;
+
             }
             
             if(level.doesIntersectTriangle(glowBall,glowBallWidth)) {
@@ -414,14 +405,19 @@ void ofApp::resetGame(){
     
     // reset colours
     // Forth parameter is transperancy and is optional.
-    glowballColor.set(0,0,255,50);
+
+//    int randomNumber = (int) ofRandom(200,255);
+
+    
+    glowballColor.set(0,0,255,80);
     glowballSparklesColor.set(0,0,255);
-    peopleBlobColor.set(255,0,255,70);
-    peopleOutlineColor.set(255,255,255,200);
+    peopleBlobColor.set(255,0,255,10);
+    peopleOutlineColor.set(255,0,255,200);
     peopleSparklesColor.set(255,0,255);
     triangleOutlineColor.set(255,0,255);
     triangleInteriorColor.set(255,0,255,70);
-    starColor.set(0, 0, 255, 100);
+    starColor.set(0,0,255);
+    
     
     
     // Reset the sparkles
@@ -529,8 +525,10 @@ void ofApp::draw() {
         //ofDrawBitmapString("START", 100, 50);
 
         // this changes the background colour
-        int bgColor = (int) ofMap(playerDistance, 100.0f, 1200.0f, 0, 255);
-        ofBackground(bgColor);
+        //int bgColor = (int) ofMap(playerDistance, 100.0f, 1200.0f, 0, 255);
+        //ofBackground(bgColor);
+        
+        ofSetBackgroundColor(0, 0, 0);
         
         // draw from the live kinect
         //kinect.drawDepth(0, 0, ofGetWidth(), ofGetHeight());//, 400, 300);
@@ -550,7 +548,7 @@ void ofApp::draw() {
             
             //instructions
             ofClear(0);
-            //ofDrawBitmapString("CLOSER [for two people || no touching]", 100, 100);
+            //ofDrawBitmapString("CLOSER [two players || no touching /n/n oo]", 100, 100);
             
             
             // draw circles of mass for each blob
@@ -707,43 +705,68 @@ void ofApp::draw() {
      */
     int randomNum;
     
-    string title = "\n\n CLOSER";
-    string introMsg = "\n\n for two people || no touching\n\n";
+    string title = "CLOSER";
+    string introMsg = "two players || no touching";
+    string instruct = "please stand close together to begin";
     string gameOverMsg = "";
+    string yourScoreMsg = "";
     string highScoreMsg = "";
     string newHighScoreMsg = "";
+
     
     switch(currScene ) {
         case MODE_TITLE_SCREEN:
-            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 300);
-            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 350);
+            ofSetColor(255,0,255);
+
+            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 80);
+ 
+            ofSetColor(0,0,255);
+            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 680);
             break;
         case MODE_START:
-            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 300);
-            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 350);
+            
+            ofSetColor(255,0,255);
+
+            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 80);
+            
+            ofSetColor(0,0,255);
+            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 650);
+
+            font.drawString(instruct, ofGetScreenWidth()/2 - font.stringWidth(instruct)/2, 700);
             break;
         case MODE_PLAY:
-            font.drawString(ofToString( (int) scoreCounter), ofGetScreenWidth()/2 - font.stringWidth(std::to_string(scoreCounter))/2, 50);
+ 
+            ofSetColor(0,0,255);
+            font.drawString(ofToString( (int) scoreCounter), ofGetScreenWidth()/2 + 10, 700);
             break;
         case MODE_GAME_OVER:
-            ofSetColor(255);
-            gameOverMsg = "GAME OVER! YOUR SCORE: " + ofToString((int) scoreCounter);
-            highScoreMsg = "HIGH SCORE " + ofToString((int) highScore);
-            newHighScoreMsg = "NEW HIGH SCORE!!!";
 
+            gameOverMsg = "GAME OVER";
+            yourScoreMsg = "your score " + ofToString((int) scoreCounter);
+            highScoreMsg = " :: high score " + ofToString((int) highScore);
+            newHighScoreMsg = "new high score!";
 
-            font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 300);
-            font.drawString(highScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(highScoreMsg)/2, 350);
+            ofSetColor(255,0,255);
+            font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 400);
+            
+            
+            ofSetColor(255,0,255);
+           font.drawString(yourScoreMsg + highScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(highScoreMsg +yourScoreMsg)/2, 550);
+            
+            
             if (newHighScore) {
-                font.drawString(newHighScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(newHighScoreMsg)/2, 400);
+                ofSetColor(0,0,255);
+                font.drawString(newHighScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(newHighScoreMsg)/2, 500);
+            }
+            else {
+            ofSetColor(0,0,255);
+            font.drawString("TRY AGAIN?", ofGetScreenWidth()/2 - font.stringWidth("TRY AGAIN?")/2, 650);
             }
             
-            font.drawString("TRY AGAIN?", ofGetScreenWidth()/2 - font.stringWidth("TRY AGAIN?")/2, 450);
-            
             //when in GAME OVER mode, the background is a random grey scale.
-            randomNum = (int) ofRandom(0,255);
-            ofSetBackgroundColor(randomNum, randomNum, randomNum);
-            ofSetBackgroundColor(0, 0, 0);
+            //randomNum = (int) ofRandom(0,255);
+            //ofSetBackgroundColor(randomNum, randomNum, randomNum);
+           // ofSetBackgroundColor(0, 0, 0);
             
             //calculates all sparkle attract points>>>>>
             for(unsigned int p = 0; p < sparkles.size() ; p++) {
@@ -795,13 +818,16 @@ void ofApp::keyPressed (int key) {
         case ' ':
 			bThreshWithOpenCV = !bThreshWithOpenCV;
 			break;
-		case '>':
+
+        case OF_KEY_RIGHT:
+        case '>':
 		case '.':
 			farThreshold ++;
 			if (farThreshold > 255) farThreshold = 255;
 			break;
 			
-		case '<':
+        case OF_KEY_LEFT:
+        case '<':
 		case ',':
 			farThreshold --;
 			if (farThreshold < 0) farThreshold = 0;
@@ -832,47 +858,19 @@ void ofApp::keyPressed (int key) {
 			kinect.close();
 			break;
             
-        case 'd':
-            bDrawDebug = !bDrawDebug;
-            break;
-            
        // case 'f':
             ofToggleFullscreen();
             ///ofHideCursor();
-            //bDrawDebug = false;
-       //     break;
+
             
-        case 'g':
+        case 'i':
+            bDrawDebug = !bDrawDebug;
             hideGui = !hideGui;
             break;
             
         case 'p':
             currScene = MODE_PLAY;
             break;
-            
-		case '1':
-			kinect.setLed(ofxKinect::LED_GREEN);
-			break;
-			
-		case '2':
-			kinect.setLed(ofxKinect::LED_YELLOW);
-			break;
-			
-		case '3':
-			kinect.setLed(ofxKinect::LED_RED);
-			break;
-			
-		case '4':
-			kinect.setLed(ofxKinect::LED_BLINK_GREEN);
-			break;
-			
-		case '5':
-			kinect.setLed(ofxKinect::LED_BLINK_YELLOW_RED);
-			break;
-			
-		case '0':
-			kinect.setLed(ofxKinect::LED_OFF);
-			break;
 			
 		case OF_KEY_UP:
 			angle++;
@@ -888,7 +886,7 @@ void ofApp::keyPressed (int key) {
         case '@':
             currScene = MODE_GAME_OVER;
             break;
-        case 'R':
+        case 'r':
             currScene = MODE_START;
             break;
 	}
