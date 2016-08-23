@@ -17,7 +17,7 @@ class demoParticle{
 		void setAttractPoints( vector <ofPoint> * attract );
         void setAttractPoint(ofPoint newAttractPt);
         void setColour(int red, int green, int blue);
-
+        void setColor(ofColor &color);
 
 		void reset();
 		void update();

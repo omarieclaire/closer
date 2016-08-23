@@ -54,7 +54,7 @@ void Level::moveY(float amount) {
     }
 }
 
-bool Level::doesIntersect(ofPoint center, float radius) {
+bool Level::doesIntersectTriangle(ofPoint center, float radius) {
     bool collision = false;
     for(unsigned int i = 0 ; i < triangles.size() ; i ++) {
         if(triangles[i].doesIntersect(center, radius)) {
@@ -62,11 +62,15 @@ bool Level::doesIntersect(ofPoint center, float radius) {
             break;
         }
     }
+    
+    return collision;
+}
+bool Level::doesIntersectStar(ofPoint center, float radius) {
+    bool collision = false;
     for(unsigned int i = 0 ; i < stars.size() ; i ++) {
         if(stars[i].doesIntersect(center, radius)) {
-            // TODO: put effect here when collission happens.
-            // a side effect of running doesIntersect is updating
-            // the star for a intersection when it happens.
+            collision = true;
+            break;
         }
     }
     return collision;
@@ -87,5 +91,17 @@ void Level::createStars() {
         // TODO: make star for last two triangles.
     } else if(triangles.size() ==2) {
         stars.push_back(star(triangles[0], triangles[1]));
+    }
+}
+
+void Level::setTrianglesColor(ofColor interior, ofColor outline) {
+    for(unsigned int i = 0 ; i < triangles.size() ; i++) {
+        triangles[i].setColor(interior, outline);
+    }
+}
+
+void Level::setStarColor(ofColor color) {
+    for(unsigned int i = 0 ; i < stars.size() ; i++ ) {
+        stars[i].setColor(color);
     }
 }

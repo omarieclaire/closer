@@ -26,7 +26,10 @@ public:
     void clearStars();
     void addTriangle(triangle t);
     void createStars();
-    bool doesIntersect(ofPoint center, float radius);
+    bool doesIntersectTriangle(ofPoint center, float radius);
+    bool doesIntersectStar(ofPoint center, float radius);
+    void setTrianglesColor(ofColor interior, ofColor outline);
+    void setStarColor(ofColor color);
     
     vector<triangle> triangles;
     vector<star> stars;

@@ -117,6 +117,21 @@ public:
     triangle triangleg;
     triangle triangleh;
     triangle trianglei;
+    
+    // Colours!
+    ofColor glowballColor;
+    ofColor glowballSparklesColor;
+    ofColor peopleBlobColor;
+    ofColor peopleOutlineColor;
+    ofColor peopleSparklesColor;
+    ofColor triangleOutlineColor;
+    ofColor triangleInteriorColor;
+    ofColor starColor;
+    
+    // Transperancy
+    int glowballTransperancy;
+    int triangleInteriorTransperancy;
+    
   
     // counters
     // I use intimacy counter for many things (draw, grow, and rise ball in first level, trigger next level. Can't go lower than 0, can't go higher than number of sparkles

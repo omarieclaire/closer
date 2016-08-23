@@ -35,6 +35,13 @@ void demoParticle::setColour(int red, int green, int blue) {
 }
 
 //------------------------------------------------------------------
+void demoParticle::setColor(ofColor &color) {
+    colourRed = color.r;
+    colourGreen = color.g;
+    colourBlue = color.b;
+}
+
+//------------------------------------------------------------------
 void demoParticle::reset(){
 	//the unique val allows us to set properties slightly differently for each particle
 	uniqueVal = ofRandom(-10000, 10000);

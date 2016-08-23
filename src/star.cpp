@@ -27,32 +27,33 @@ star::star(triangle t1, triangle t2) {
 }
 
 void star::draw() {
-    if(isCollided && damping > 0) {
+    if(isCollided && damping > 0 ) {
         damping -= 1;
-        red -= 20;
-        green = 0;
-        blue = 0;
-        setColour(red, green, blue);
-        ofSetColor(red,green,blue);
+        ofSetColor(color, damping);
         ofDrawCircle(point, radius);
     } else if (!isCollided) {
-        ofSetColor(red, green, blue);
+        ofSetColor(color);
         ofDrawCircle(point, radius);
     }
 }
 
-void star::setColour(int r, int g, int b) {
-    red = r;
-    green = g;
-    blue = b;
+void star::setColor(ofColor c) {
+    color = c;
 }
 
 bool star::doesIntersect(ofPoint center, float r) {
-    if (point.distance(center) <= (r + radius)) {
-        isCollided = true;
-        return isCollided;
+    if (isCollided) {
+        return false;
+    } else {
+        if (point.distance(center) <= (r + radius)) {
+                isCollided = true;
+                return true;
+        }
     }
+    return false;
 }
+
+
 
 void star::moveY(float amount, int screenHeight, int levelHeight) {
     
@@ -60,10 +61,11 @@ void star::moveY(float amount, int screenHeight, int levelHeight) {
     
     if(point.y >= screenHeight) {
         point.y = 0 - levelHeight;
+        isCollided = false;
+        damping = 60;
     }
     
 }
-
 
 
 

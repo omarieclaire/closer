@@ -26,6 +26,7 @@ public:
     bool doesIntersect (ofPoint center, float radius);
     bool outOfScreen(int screenHeight);
     void setColor(int r, int g, int b);
+    void setColor(ofColor interior, ofColor outline);
     void moveY(float amount);
     void moveY(float amount, int screenHeight, int levelHeight);
     
@@ -40,9 +41,8 @@ public:
     ofPoint b;
     ofPoint c;
     
-    int red;
-    int green;
-    int blue;
+    ofColor interior;
+    ofColor outline;
 };
 
 

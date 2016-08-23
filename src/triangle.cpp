@@ -19,10 +19,6 @@ triangle::triangle() {
     a = ofPoint(0,0);
     b = ofPoint(0,0);
     c = ofPoint(0,0);
-    
-    red = 255;
-    green = 255;
-    blue = 255;
 }
 
 
@@ -31,10 +27,6 @@ triangle::triangle(ofPoint x, ofPoint y, ofPoint z) {
     a = x;
     b = y;
     c = z;
-    
-    red = 0;
-    green = 0;
-    blue = 0;
 }
 //in either of the above contructors it will be handy to have a method so we can update the points
 
@@ -81,10 +73,6 @@ void triangle::setPoints(ofPoint top, float height, float width, direction dir) 
     b.y = top.y + height / 2;
     c.x = top.x;
     c.y = top.y + height;
-    
-    red = 255;
-    green = 255;
-    blue = 255;
 }
 
 ofPoint triangle::peak() {
@@ -93,16 +81,17 @@ ofPoint triangle::peak() {
 
 
 void triangle::draw(){
-    ofSetColor(red, green, blue,80);
+    ofSetColor(interior);
     ofDrawTriangle(a.x, a.y, b.x, b.y, c.x, c.y);
-
+    ofSetColor(outline);
+    ofDrawLine(a.x,a.y, b.x,b.y);
+    ofDrawLine(b.x,b.y,c.x,c.y);
+    ofDrawLine(c.x,c.y,a.x,a.y);
 }
 
-void triangle::setColor(int r, int g, int b){
-    red = r;
-    green = g;
-    blue = b;
-
+void triangle::setColor(ofColor i, ofColor o){
+    interior = i;
+    outline = o;
 }
 
 bool triangle::doesIntersect(ofPoint center, float radius){

@@ -376,7 +376,12 @@ void ofApp::update() {
                 sparkles2[p].update();
             }
             
-            if(level.doesIntersect(glowBall,glowBallWidth)) {
+            if(level.doesIntersectStar(glowBall, glowBallWidth)) {
+                pop.play();
+                scoreCounter += 50;
+            }
+            
+            if(level.doesIntersectTriangle(glowBall,glowBallWidth)) {
                 badCollision = true;
                 pop.play();
             }
@@ -407,6 +412,18 @@ void ofApp::resetGame(){
     //Set the scene (don't need to otherwise setup
     currScene = MODE_TITLE_SCREEN;
     
+    // reset colours
+    // Forth parameter is transperancy and is optional.
+    glowballColor.set(0,0,255,50);
+    glowballSparklesColor.set(0,0,255);
+    peopleBlobColor.set(255,0,255,70);
+    peopleOutlineColor.set(255,255,255,200);
+    peopleSparklesColor.set(255,0,255);
+    triangleOutlineColor.set(255,0,255);
+    triangleInteriorColor.set(255,0,255,70);
+    starColor.set(0, 0, 255, 100);
+    
+    
     // Reset the sparkles
     for(unsigned int i = 0 ; i < sparkles.size() ; i++) {
         sparkles[i].reset();
@@ -431,6 +448,8 @@ void ofApp::resetGame(){
     level.setScreenHeight(screenHeight);
     level.clearTriangles();
     level.clearStars();
+    
+    level.setHeight(16383);
 
     level.addTriangle(triangle(ofPoint(0,0 - 16383),ofPoint(640.15,276.107 - 16383),ofPoint(0,552.215 - 16383)));
     level.addTriangle(triangle(ofPoint(0,581.301 - 16383),ofPoint(848.718,947.444 - 16383),ofPoint(0,1313.587 - 16383)));
@@ -468,8 +487,15 @@ void ofApp::resetGame(){
     level.addTriangle(triangle(ofPoint(screenWidth,1528.1 - 16383),ofPoint(640,1804.2 - 16383),ofPoint(screenWidth,2080.3 - 16383)));
     level.addTriangle(triangle(ofPoint(screenWidth,215.975 - 16383),ofPoint(500.598,552.214 - 16383),ofPoint(screenWidth,888.454 - 16383)));
     
+    // Set color of triangles
+    level.setTrianglesColor(triangleInteriorColor, triangleOutlineColor);
+    
+    
     // Create the stars based on the locations of the triangles.
     level.createStars();
+    
+    // Set color of star
+    level.setStarColor(starColor);
     
     //count things
     intimacyCounter = 0;
@@ -509,7 +535,8 @@ void ofApp::draw() {
         // draw from the live kinect
         //kinect.drawDepth(0, 0, ofGetWidth(), ofGetHeight());//, 400, 300);
         //kinect.draw(420, 10, 400, 300);
-        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false);
+        ofSetColor(peopleOutlineColor);
+        contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false,peopleOutlineColor);
         //contourFinder.draw(10, 320, 400, 300);
         //grayImage.draw(0,0);
         ofEasyCam easyCam;
@@ -527,13 +554,15 @@ void ofApp::draw() {
             
             
             // draw circles of mass for each blob
-            ofSetColor(255,85);
+            //ofSetColor(255,85);
+            ofSetColor(peopleBlobColor);
             ofDrawCircle(blendCenter1.x, blendCenter1.y, radiusOfBlob1);
             ofDrawCircle(blendCenter2.x, blendCenter2.y, radiusOfBlob2);
             
             
             // draws the glowball between blobs (also, in update the glowball rise is calculated)
-            ofSetColor(255,80);
+            //ofSetColor(255,80);
+            ofSetColor(glowballColor);
             if (intimacyCounter >= 100) {
                 //TODO: investigate here
                 ofDrawCircle(glowBall.x, glowBall.y,glowBallWidth);
@@ -583,23 +612,28 @@ void ofApp::draw() {
         
         level.draw();
         
-        ofSetColor(255,80);
+        //ofSetColor(255,80);
+        ofSetColor(glowballColor);
         ofDrawCircle(glowBall.x, glowBall.y, glowBallWidth);
         
         for(unsigned int p = 0; p < sparkles.size() ; p++) {
             if (p < intimacyCounter) {
-                sparkles[p].setColour(0,0,255);
+                //sparkles[p].setColour(0,0,255);
+                sparkles[p].setColor(glowballSparklesColor);
             } else {
-                sparkles[p].setColour(255,63,180);
+                //sparkles[p].setColour(255,63,180);
+                sparkles[p].setColor(peopleSparklesColor);
             }
             sparkles[p].draw();
         }
         
         for(unsigned int p = 0; p < sparkles2.size() ; p++) {
             if (p < intimacyCounter) {
-                sparkles2[p].setColour(0,0,255);
+                //sparkles[p].setColour(0,0,255);
+                sparkles[p].setColor(glowballSparklesColor);
             } else {
-                sparkles2[p].setColour(255,63,180);
+                //sparkles[p].setColour(255,63,180);
+                sparkles[p].setColor(peopleSparklesColor);
             }
             sparkles2[p].draw();
         }
@@ -619,7 +653,7 @@ void ofApp::draw() {
         }
     }
     
-    contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false);
+    contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false,peopleOutlineColor);
     
     if (bDrawDebug == true) {
         grayImage.draw(0,0,320,240);

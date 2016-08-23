@@ -17,7 +17,7 @@ public:
     
     star(triangle t1, triangle t2);
     void draw();
-    void setColour(int r, int g, int b);
+    void setColor(ofColor color);
     void moveY(float amount, int screenHeight, int levelHeight);
     bool doesIntersect (ofPoint center, float radius);
     
@@ -25,8 +25,7 @@ public:
     bool isCollided = false;
     float radius = 5.0;
     int damping = 60;
-    int red = 255;
-    int green = 255;
-    int blue = 255;
+    
+    ofColor color;
 };
 #endif /* star_hpp */
