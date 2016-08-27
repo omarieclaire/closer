@@ -47,7 +47,7 @@ void ofApp::setup() {
 	angle = 0;
 //	kinect.setCameraTiltAngle(angle);
     
-    font.load("Ayuthaya", 25);
+    font.load("Ayuthaya", 22);
 
     
 //sound
@@ -639,9 +639,9 @@ void ofApp::draw() {
         
 //COLLISION TEST: draws temp line for collisions
         
-        ofDrawLine(0, 20, ofGetScreenWidth(), 20);
+        ofDrawLine(0, 40, ofGetScreenWidth(), 20);
         
-        if (glowBall.y <= 20) {
+        if (glowBall.y <= 40) {
         
 //GAME OVER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         
