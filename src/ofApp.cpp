@@ -327,16 +327,14 @@ void ofApp::update() {
             
         break;
         case MODE_PLAY:
-            if( badCollision == true){
+             if( badCollision == true){
                 pop.play();
                 fill.play();
-                //if(ofGetElapsedTimef() >= 0){
                     currScene = MODE_GAME_OVER;
                     timeGameOverSceneStarted = ofGetElapsedTimeMillis();
- //                   sparkles.clear();
-                //}
+                    sparkles.clear();
             }
-            
+
             scoreCounter = scoreCounter + 0.1;
             
             /**
@@ -409,7 +407,8 @@ void ofApp::resetGame(){
 //    int randomNumber = (int) ofRandom(200,255);
 
     
-    glowballColor.set(0,0,255,80);
+    //glowballColor.set(0,0,255,90);
+    glowballColor.set(0,0,255);
     glowballSparklesColor.set(0,0,255);
     peopleBlobColor.set(255,0,255,10);
     peopleOutlineColor.set(255,0,255,200);
@@ -447,41 +446,42 @@ void ofApp::resetGame(){
     
     level.setHeight(16383);
 
-    level.addTriangle(triangle(ofPoint(0,0 - 16383),ofPoint(640.15,276.107 - 16383),ofPoint(0,552.215 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,581.301 - 16383),ofPoint(848.718,947.444 - 16383),ofPoint(0,1313.587 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,1622.525 - 16383),ofPoint(463.41,1822.444 - 16383),ofPoint(0,2022.363 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,2617.027 - 16383),ofPoint(528.14,2844.87 - 16383),ofPoint(0,3072.714 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,3511.872 - 16383),ofPoint(1001.195,3943.795 - 16383),ofPoint(0,4375.718 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,4222.144 - 16383),ofPoint(946.112,4630.303 - 16383),ofPoint(0,5038.463 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,0 - 16383),ofPoint(700,276.107 - 16383),ofPoint(0,552.215 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,581.301 - 16383),ofPoint(700,947.444 - 16383),ofPoint(0,1313.587 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,1622.525 - 16383),ofPoint(600,1822.444 - 16383),ofPoint(0,2022.363 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,2617.027 - 16383),ofPoint(700,2844.87 - 16383),ofPoint(0,3072.714 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,3511.872 - 16383),ofPoint(800,3943.795 - 16383),ofPoint(0,4375.718 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,4222.144 - 16383),ofPoint(800,4630.303 - 16383),ofPoint(0,5038.463 - 16383)));
     level.addTriangle(triangle(ofPoint(0,5500.167 - 16383),ofPoint(640,5776.267 - 16383),ofPoint(0,6052.368 - 16383)));
     level.addTriangle(triangle(ofPoint(0,6307.993 - 16383),ofPoint(528.14,6535.836 - 16383),ofPoint(0,6763.679 - 16383)));
     level.addTriangle(triangle(ofPoint(0,7124.104 - 16383),ofPoint(716.748,7433.314 - 16383),ofPoint(0,7742.524 - 16383)));
     level.addTriangle(triangle(ofPoint(0,8390.451 - 16383),ofPoint(716.748,8699.661 - 16383),ofPoint(0,9008.871 - 16383)));
     level.addTriangle(triangle(ofPoint(0,9535.604 - 16383),ofPoint(567.284,9780.334 - 16383),ofPoint(0,10025.065 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,10188.494 - 16383),ofPoint(946.111,10596.653 - 16383),ofPoint(0,11004.813 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,11552.926 - 16383),ofPoint(946.112,11961.085 - 16383),ofPoint(0,12369.245 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,12866.191 - 16383),ofPoint(946.111,13274.351 - 16383),ofPoint(0,13682.511 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,10188.494 - 16383),ofPoint(716,10596.653 - 16383),ofPoint(0,11004.813 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,11552.926 - 16383),ofPoint(716,11961.085 - 16383),ofPoint(0,12369.245 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,12866.191 - 16383),ofPoint(715,13274.351 - 16383),ofPoint(0,13682.511 - 16383)));
     level.addTriangle(triangle(ofPoint(0,13935.19 - 16383),ofPoint(716.748,14244.4 - 16383),ofPoint(0,14553.611 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,14573.886 - 16383),ofPoint(576.253,14822.485 - 16383),ofPoint(0,15071.086 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,15329.592 - 16383),ofPoint(473.056,15533.672 - 16383),ofPoint(0,15737.752 - 16383)));
-    level.addTriangle(triangle(ofPoint(0,15941.831 - 16383),ofPoint(251.474,16050.318 - 16383),ofPoint(0,16158.806 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,14285.331 - 16383),ofPoint(716.748,14528.322 - 16383),ofPoint(screenWidth,14771.312 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,14573.886 - 16383),ofPoint(650,14822.485 - 16383),ofPoint(0,15071.086 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,15329.592 - 16383),ofPoint(300,15533.672 - 16383),ofPoint(0,15737.752 - 16383)));
+    level.addTriangle(triangle(ofPoint(0,15941.831 - 16383),ofPoint(200,16050.318 - 16383),ofPoint(0,16158.806 - 16383)));
+//first triangle that I see on the left to last triangle that I see on the left (it is flipped)
+    level.addTriangle(triangle(ofPoint(screenWidth,14285.331 - 16383),ofPoint(1000,14528.322 - 16383),ofPoint(screenWidth,14771.312 - 16383)));
     level.addTriangle(triangle(ofPoint(screenWidth,15329.592 - 16383),ofPoint(806.943,15533.672 - 16383),ofPoint(screenWidth,15737.752 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,15980.863 - 16383),ofPoint(946.111,16124.904 - 16383),ofPoint(screenWidth,16268.946 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,15980.863 - 16383),ofPoint(700,16124.904 - 16383),ofPoint(screenWidth,16268.946 - 16383)));
     level.addTriangle(triangle(ofPoint(screenWidth,13339.246 - 16383),ofPoint(716.748,13582.236 - 16383),ofPoint(screenWidth,13825.227 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,12216.091 - 16383),ofPoint(333.888,12624.25 - 16383),ofPoint(screenWidth,13032.409 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,11095.331 - 16383),ofPoint(358.374,11492.926 - 16383),ofPoint(screenWidth,11890.521 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,12216.091 - 16383),ofPoint(700,12624.25 - 16383),ofPoint(screenWidth,13032.409 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,11095.331 - 16383),ofPoint(700,11492.926 - 16383),ofPoint(screenWidth,11890.521 - 16383)));
     level.addTriangle(triangle(ofPoint(screenWidth,9537.344 - 16383),ofPoint(716.748,9780.334 - 16383),ofPoint(screenWidth,10023.324 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,8672.003 - 16383),ofPoint(264.07,9110.283 - 16383),ofPoint(screenWidth,9548.561 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,7755.767 - 16383),ofPoint(333.887,8163.926 - 16383),ofPoint(screenWidth,8572.085 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,6812.5 - 16383),ofPoint(473.056,7160.621 - 16383),ofPoint(screenWidth,7508.742 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,8672.003 - 16383),ofPoint(666,9110.283 - 16383),ofPoint(screenWidth,9548.561 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,7755.767 - 16383),ofPoint(716,8163.926 - 16383),ofPoint(screenWidth,8572.085 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,6812.5 - 16383),ofPoint(700,7160.621 - 16383),ofPoint(screenWidth,7508.742 - 16383)));
     level.addTriangle(triangle(ofPoint(screenWidth,6259.736 - 16383),ofPoint(640,6535.836 - 16383),ofPoint(screenWidth,6811.937 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,4959.948 - 16383),ofPoint(333.888,5368.107 - 16383),ofPoint(screenWidth,5776.267 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,4959.948 - 16383),ofPoint(700,5368.107 - 16383),ofPoint(screenWidth,5776.267 - 16383)));
     level.addTriangle(triangle(ofPoint(screenWidth,4108.965 - 16383),ofPoint(716.748,4351.955 - 16383),ofPoint(screenWidth,4594.946 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,2692.438 - 16383),ofPoint(500.598,3028.678 - 16383),ofPoint(screenWidth,3364.917 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,2109.568 - 16383),ofPoint(350.598,2510.519 - 16383),ofPoint(screenWidth,2911.469 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,1528.1 - 16383),ofPoint(640,1804.2 - 16383),ofPoint(screenWidth,2080.3 - 16383)));
-    level.addTriangle(triangle(ofPoint(screenWidth,215.975 - 16383),ofPoint(500.598,552.214 - 16383),ofPoint(screenWidth,888.454 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,2692.438 - 16383),ofPoint(700,3028.678 - 16383),ofPoint(screenWidth,3364.917 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,2109.568 - 16383),ofPoint(800,2510.519 - 16383),ofPoint(screenWidth,2911.469 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,1528.1 - 16383),ofPoint(800,1804.2 - 16383),ofPoint(screenWidth,2080.3 - 16383)));
+    level.addTriangle(triangle(ofPoint(screenWidth,215.975 - 16383),ofPoint(700,552.214 - 16383),ofPoint(screenWidth,888.454 - 16383)));
     
     // Set color of triangles
     level.setTrianglesColor(triangleInteriorColor, triangleOutlineColor);
@@ -500,7 +500,7 @@ void ofApp::resetGame(){
     
     // glowball and intimacy stuff
     glowBallRise = 0;
-    intimacyThreshold = 450;
+    intimacyThreshold = 600;
     glowBallWidth = 0;
     badCollision = 0;
     
@@ -559,7 +559,7 @@ void ofApp::draw() {
             
             
             // draws the glowball between blobs (also, in update the glowball rise is calculated)
-            //ofSetColor(255,80);
+            //ofSetColor(255,90);
             ofSetColor(glowballColor);
             if (intimacyCounter >= 100) {
                 //TODO: investigate here
@@ -639,7 +639,7 @@ void ofApp::draw() {
         
 //COLLISION TEST: draws temp line for collisions
         
-        ofDrawLine(0, 40, ofGetScreenWidth(), 20);
+        //ofDrawLine(0, 40, ofGetScreenWidth(), 20);
         
         if (glowBall.y <= 40) {
         
