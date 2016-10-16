@@ -64,12 +64,10 @@ public:
     appScene currScene;
 
     //for sound player
-    ofSoundPlayer beat;
     ofSoundPlayer synth;
+    ofSoundPlayer beat;
     ofSoundPlayer synth2;
     ofSoundPlayer fill;
-    ofSoundPlayer sax;
-    ofSoundPlayer sample;
     ofSoundPlayer pop;
 
     float synthSpeed;
@@ -176,6 +174,8 @@ public:
     ofxPanel gui;
     
     // Constants that can be tweaked with sliders / gui
+    bool mirrorScreen = false;
+
     bool hideGui;
     float modeStartGlowRiseIntimacyFactor;
     float modePlayGlowRiseFactor;

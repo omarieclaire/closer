@@ -9,52 +9,51 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	ofSetLogLevel(OF_LOG_VERBOSE);
-	
+    ofSetLogLevel(OF_LOG_VERBOSE);
     
-	// enable depth->video image calibration
-	kinect.setRegistration(true);
     
-	kinect.init();
-	//kinect.init(true); // shows infrared instead of RGB video image
-	//kinect.init(false, false); // disable video image (faster fps)
-	
-	kinect.open();		// opens first available kinect
-	//kinect.open(1);	// open a kinect by id, starting with 0 (sorted by serial # lexicographically))
-	//kinect.open("A00362A08602047A");	// open a kinect using it's unique serial #
+    // enable depth->video image calibration
+    kinect.setRegistration(true);
     
-	// print the intrinsic IR sensor values
-	if(kinect.isConnected()) {
-		ofLogNotice() << "sensor-emitter dist: " << kinect.getSensorEmitterDistance() << "cm";
-		ofLogNotice() << "sensor-camera dist:  " << kinect.getSensorCameraDistance() << "cm";
-		ofLogNotice() << "zero plane pixel size: " << kinect.getZeroPlanePixelSize() << "mm";
-		ofLogNotice() << "zero plane dist: " << kinect.getZeroPlaneDistance() << "mm";
-	}
-
-	
-	colorImg.allocate(kinect.width, kinect.height);
-	grayImage.allocate(kinect.width, kinect.height);
-	grayThreshNear.allocate(kinect.width, kinect.height);
-	grayThreshFar.allocate(kinect.width, kinect.height);
-	
-	nearThreshold = 230;
+    //kinect.init();
+    //kinect.init(true); // shows infrared instead of RGB video image
+    kinect.init(false, false); // disable video image (faster fps)
+    
+    kinect.open();		// opens first available kinect
+    
+    // print the intrinsic IR sensor values
+    if(kinect.isConnected()) {
+        ofLogNotice() << "sensor-emitter dist: " << kinect.getSensorEmitterDistance() << "cm";
+        ofLogNotice() << "sensor-camera dist:  " << kinect.getSensorCameraDistance() << "cm";
+        ofLogNotice() << "zero plane pixel size: " << kinect.getZeroPlanePixelSize() << "mm";
+        ofLogNotice() << "zero plane dist: " << kinect.getZeroPlaneDistance() << "mm";
+    }
+    
+    // allocate space for images
+    colorImg.allocate(kinect.width, kinect.height);
+    grayImage.allocate(kinect.width, kinect.height);
+    grayThreshNear.allocate(kinect.width, kinect.height);
+    grayThreshFar.allocate(kinect.width, kinect.height);
+    
+    nearThreshold = 230;
     farThreshold = 196;//70;
-	bThreshWithOpenCV = true;
-	
-	ofSetFrameRate(60);
-	
-// zero the tilt on startup
-	angle = 0;
-//	kinect.setCameraTiltAngle(angle);
+    bThreshWithOpenCV = true;
+    
+    ofSetFrameRate(60);
+    
+    // zero the tilt on startup
+    // angle = 0;
+    // kinect.setCameraTiltAngle(angle);
+    
     
     font.load("Ayuthaya", 22);
 
     
-//sound
+    //sounds
     
     synth.load("sounds/synth.mp3");
     synth.setLoop(true);
-    synth.setVolume(0.8f);
+    synth.setVolume(0.3f);
     synth.setSpeed(1.0f);
     synth.setMultiPlay(true);
     synth.play();
@@ -76,34 +75,21 @@ void ofApp::setup() {
     fill.load("sounds/death2.mp3");
     fill.setVolume(0.50f);
     fill.setSpeed(1.0f);
-
- /*
-    sax.load("sounds/synth3.mp3");
-    sax.setLoop(false);
-    sax.setVolume(0.75f);
-    sax.setSpeed(1.0f);
-    sax.setMultiPlay(true);
-    sax.play();
-
-    sample.load("sounds/synth3.mp3");
-    sample.setLoop(false);
-    sample.setVolume(0.80f);
-    sample.setSpeed(1.0f);
-    sample.setMultiPlay(true);
-    sample.play();
-    */
     
     pop.load("sounds/popp.mp3");
-    //pop.setLoop(true);
     pop.setVolume(0.8f);
     pop.setSpeed(1.0f);
     pop.setMultiPlay(true);
-    //pop.play();
 
-    numSparkles = 1000;
+// setup sparkles
+    
+    numSparkles = 1500;
     ofPoint initialSparklePoint(300,300);
     sparkles.assign(numSparkles, demoParticle(initialSparklePoint));
     sparkles2.assign(numSparkles, demoParticle(initialSparklePoint));
+
+
+//reset Game
     resetGame();
     
 // setup GUI stuff
@@ -114,10 +100,14 @@ void ofApp::setup() {
     modeStartGlowRiseIntimacyFactor = 0.8;
     
     /**
-     * CHANGE DEFAULT VALUES FOR THINGS IN SLIDERS. The first number is the default value.
-     * the next numbers are min and max.
-     */
+     CHANGE DEFAULT VALUES FOR THINGS IN SLIDERS. The first number is the default value.
+     the next numbers are min and max.
+     **/
+
+    // start mode (pre-game) intimacy level needed to rise
     gui.add(modeStartGlowRiseIntimacyFactorSlider.setup("MS: glowrise IF", 0.8, 0.5, 1.5));
+
+    // play level intimacy level needed to [wait, this might be obsolete]
     gui.add(modePlayGlowRiseFactorSlider.setup("MP: glowrise F", 0.003, 0, 0.01));
     gui.add(modePlayGlowballWidthExponentSlider.setup("MP: glowball Exp", 2, 0, 3));
     gui.add(nearThreshold.set("near Thresh",255,0,255));
@@ -149,34 +139,35 @@ void ofApp::modePlayGlowballWidthExponentListener(float & exponent) {
 void ofApp::update() {
 	
 	
-	kinect.update();
-	
-// there is a new frame and we are connected
-	if(kinect.isFrameNew()) {
-		
-// load grayscale depth image from the kinect source
-		grayImage.setFromPixels(kinect.getDepthPixels());
-		
-// we do two thresholds - one for the far plane and one for the near plane
-// we then do a cvAnd to get the pixels which are a union of the two thresholds
-			grayThreshNear = grayImage;
-			grayThreshFar = grayImage;
-			grayThreshNear.threshold(nearThreshold, true);
-			grayThreshFar.threshold(farThreshold);
-			cvAnd(grayThreshNear.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
-		
-// update the cv images
-		grayImage.flagImageChanged();
-		
-// find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
-// also, find holes is set to true so we will get interior contours as well....
-		contourFinder.findContours(grayImage, 10, (kinect.width*kinect.height)/2, 20, false);
-	}
+    kinect.update();
     
-  
+    // there is a new frame and we are connected
+    if(kinect.isFrameNew()) {
+        
+        // load grayscale depth image from the kinect source
+        grayImage.setFromPixels(kinect.getDepthPixels());
+        
+        // we do two thresholds - one for the far plane and one for the near plane
+        // we then do a cvAnd to get the pixels which are a union of the two thresholds
+        grayThreshNear = grayImage;
+        grayThreshFar = grayImage;
+        grayThreshNear.threshold(nearThreshold, true);
+        grayThreshFar.threshold(farThreshold);
+        cvAnd(grayThreshNear.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
+        
+        // update the cv images
+        grayImage.flagImageChanged();
+        
+        // find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
+        // also, find holes is set to true so we will get interior contours as well....
+        contourFinder.findContours(grayImage, 10, (kinect.width*kinect.height)/2, 20, false);
+    }
+    
+    
     //scales the drawn image so to size
     imageScale.x = ofGetWidth() / kinect.getWidth();
     imageScale.y = ofGetHeight() / kinect.getHeight();
+
     
     //find how many blobs there are?
     if(contourFinder.nBlobs > 0 ){
@@ -194,7 +185,6 @@ void ofApp::update() {
 
         
         //replace blobcenter with global
-        
         blendCenter1 = 0.8 * blendCenter1 + 0.2 * blobCenter1;
         blendCenter2 = 0.8 * blendCenter2 + 0.2 * blobCenter2;
         
@@ -207,7 +197,7 @@ void ofApp::update() {
         radiusOfBlob2 = sqrt(areaOfBlob2 / PI);
         
         
-        // intimacy threshold
+        // intimacy threshold: builds of subtracts "intimacy" based on player-to-player distance
         if (playerDistance <= intimacyThreshold) {
             
             intimacyCounter++;
@@ -221,7 +211,7 @@ void ofApp::update() {
                 intimacyCounter = 0;
         }
         
-        // calculates the glowBall position
+        // calculates the glowBall position (directly between two players)
         float oldGlowBallY = glowBall.y;
         glowBall = blobCenter1.getMiddle(blobCenter2);
         
@@ -239,7 +229,7 @@ void ofApp::update() {
             glowBallRise = 0;
         }
         
-        //calculates all sparkle attract points>>>>>
+        //calculates all sparkle attract points
         for(unsigned int p = 0; p < sparkles.size() ; p++) {
             
             if (p < intimacyCounter) {
@@ -332,7 +322,8 @@ void ofApp::update() {
                 fill.play();
                     currScene = MODE_GAME_OVER;
                     timeGameOverSceneStarted = ofGetElapsedTimeMillis();
-                    sparkles.clear();
+//                    sparkles.clear();
+
             }
 
             scoreCounter = scoreCounter + 0.1;
@@ -402,10 +393,6 @@ void ofApp::resetGame(){
     currScene = MODE_TITLE_SCREEN;
     
     // reset colours
-    // Forth parameter is transperancy and is optional.
-
-//    int randomNumber = (int) ofRandom(200,255);
-
     
     //glowballColor.set(0,0,255,90);
     glowballColor.set(0,0,255);
@@ -413,10 +400,11 @@ void ofApp::resetGame(){
     peopleBlobColor.set(255,0,255,10);
     peopleOutlineColor.set(255,0,255,200);
     peopleSparklesColor.set(255,0,255);
-    triangleOutlineColor.set(255,0,255);
-    triangleInteriorColor.set(255,0,255,70);
+    triangleOutlineColor.set(255,10,255);
+    triangleInteriorColor.set(255,0,255);
     starColor.set(0,0,255);
-    
+
+
     
     
     // Reset the sparkles
@@ -511,10 +499,11 @@ void ofApp::resetGame(){
 //--------------------------------------------------------------
 void ofApp::draw() {
     
-    ofPushMatrix();
-    ofScale(-1,1);
-    ofTranslate(-ofGetWidth(), 0);
-    //ofBackground(255,0,0);
+    if(mirrorScreen) {
+        ofPushMatrix();
+        ofScale(-1,1);
+        ofTranslate(-ofGetWidth(), 0);
+    }
 
     // draw depending on scene
     if(currScene == MODE_TITLE_SCREEN){
@@ -522,11 +511,6 @@ void ofApp::draw() {
 
     //START MODE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     } else if(currScene == MODE_START){
-        //ofDrawBitmapString("START", 100, 50);
-
-        // this changes the background colour
-        //int bgColor = (int) ofMap(playerDistance, 100.0f, 1200.0f, 0, 255);
-        //ofBackground(bgColor);
         
         ofSetBackgroundColor(0, 0, 0);
         
@@ -548,7 +532,6 @@ void ofApp::draw() {
             
             //instructions
             ofClear(0);
-            //ofDrawBitmapString("CLOSER [two players || no touching /n/n oo]", 100, 100);
             
             
             // draw circles of mass for each blob
@@ -567,25 +550,23 @@ void ofApp::draw() {
             }
             
             //SPARKLE DRAW sets colours and draws the sparkles (attract point is calculated in update)
-            // UPDATE PARTICLE COLOURS IN HERE!!!!!!
             for(unsigned int p = 0; p < sparkles.size() ; p++) {
                 if (p < intimacyCounter) {
                     // these particles are traveling towards the center ball
                     sparkles[p].setColour(0,0,255);
                 } else {
-                    sparkles[p].setColour(255,63,180);
+                    sparkles[p].setColour(255,0,255);
                 }
                 sparkles[p].draw();
             }
             
              //SPARKLE DRAW sets colours and draws the sparkles2 (attract point is calculated in update)
-            // UPDATE PARTICLE COLOURS IN HERE!!!!!!
             for(unsigned int p = 0; p < sparkles2.size() ; p++) {
                 if (p < intimacyCounter) {
                     // these particles are traveling towards the center ball
                     sparkles2[p].setColour(0,0,255);
                 } else {
-                    sparkles2[p].setColour(255,63,180);
+                    sparkles2[p].setColour(255,0,255);
                 }
                 sparkles2[p].draw();
             }
@@ -605,8 +586,6 @@ void ofApp::draw() {
         
         //GLOWBALL: COUNTER
         
-        //ofDrawBitmapString("PLAY", 100, 50);
-        //ofDrawBitmapString("Your Score: " + ofToString( (int) scoreCounter), 100, 100);
         
         level.draw();
         
@@ -619,7 +598,6 @@ void ofApp::draw() {
                 //sparkles[p].setColour(0,0,255);
                 sparkles[p].setColor(glowballSparklesColor);
             } else {
-                //sparkles[p].setColour(255,63,180);
                 sparkles[p].setColor(peopleSparklesColor);
             }
             sparkles[p].draw();
@@ -630,16 +608,11 @@ void ofApp::draw() {
                 //sparkles[p].setColour(0,0,255);
                 sparkles[p].setColor(glowballSparklesColor);
             } else {
-                //sparkles[p].setColour(255,63,180);
                 sparkles[p].setColor(peopleSparklesColor);
             }
             sparkles2[p].draw();
         }
         
-        
-//COLLISION TEST: draws temp line for collisions
-        
-        //ofDrawLine(0, 40, ofGetScreenWidth(), 20);
         
         if (glowBall.y <= 40) {
         
@@ -662,52 +635,21 @@ void ofApp::draw() {
 
     
     ofSetColor(255, 255, 255);
-	
-    /*
     
-    HIDEME
-    
-    stringstream reportStream;
-        
-    if(kinect.hasAccelControl()) {
-        reportStream << "accel is: " << ofToString(kinect.getMksAccel().x, 2) << " / "
-        << ofToString(kinect.getMksAccel().y, 2) << " / "
-        << ofToString(kinect.getMksAccel().z, 2) << endl;
-    } else {
-        reportStream << "Note: this is a newer Xbox Kinect or Kinect For Windows device," << endl
-		<< "motor / led / accel controls are not currently supported" << endl << endl;
+    if(mirrorScreen) {
+        ofPopMatrix();
     }
-    
-	reportStream << "press p to switch between images and point cloud, rotate the point cloud with the mouse" << endl
-	<< "using opencv threshold = " << bThreshWithOpenCV <<" (press spacebar)" << endl
-	<< "set near threshold " << nearThreshold << " (press: + -)" << endl
-	<< "set far threshold " << farThreshold << " (press: < >) num blobs found " << contourFinder.nBlobs
-	<< ", fps: " << ofGetFrameRate() << endl
-	<< "press c to close the connection and o to open it again, connection is: " << kinect.isConnected() << endl
-    << "press g to toggle the gui " << endl;
-
-
-
-    if(kinect.hasCamTiltControl()) {
-    	reportStream << "press UP and DOWN to change the tilt angle: " << angle << " degrees" << endl
-        << "press 1-5 & 0 to change the led mode" << endl;
-    }
-    
-     ofDrawBitmapString(reportStream.str(), 20, 652);
-     
-    */
-    
-    ofPopMatrix();
     
     /**
-     * this is used in the switch below. for some reason we cannot create
-     * variables in a switch statement in C++
+     * this is used in the switch below. 
      */
     int randomNum;
     
     string title = "CLOSER";
-    string introMsg = "two players || no touching";
-    string instruct = "please stand close together to begin";
+    string introMsg = "for two players";
+    string noTouch = "no touching";
+    string instruct = "stand close together to begin";
+    string instruct2 = "the ball must avoid the spikes";
     string gameOverMsg = "";
     string yourScoreMsg = "";
     string highScoreMsg = "";
@@ -716,57 +658,52 @@ void ofApp::draw() {
     
     switch(currScene ) {
         case MODE_TITLE_SCREEN:
-            ofSetColor(255,0,255);
+            ofSetColor(255, 0, 255);
 
             font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 80);
  
-            ofSetColor(0,0,255);
-            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 680);
+            ofSetColor(0, 0, 255);
+            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 660);
             break;
         case MODE_START:
             
-            ofSetColor(255,0,255);
+            ofSetColor(255, 0, 255);
 
             font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 80);
             
-            ofSetColor(0,0,255);
-            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 650);
+            ofSetColor(0, 0, 255);
+            font.drawString(noTouch, ofGetScreenWidth()/2 - font.stringWidth(noTouch)/2, 660);
 
             font.drawString(instruct, ofGetScreenWidth()/2 - font.stringWidth(instruct)/2, 700);
             break;
         case MODE_PLAY:
- 
-            ofSetColor(0,0,255);
+
+            ofSetColor(0, 255, 0);
             font.drawString(ofToString( (int) scoreCounter), ofGetScreenWidth()/2 + 10, 700);
+            ofSetColor(0, 0, 255);
+            font.drawString(instruct2, ofGetScreenWidth()/2 - font.stringWidth(instruct2)/2, 750);
             break;
         case MODE_GAME_OVER:
+            ofSetColor(255, 0, 255);
 
             gameOverMsg = "GAME OVER";
             yourScoreMsg = "your score " + ofToString((int) scoreCounter);
             highScoreMsg = " :: high score " + ofToString((int) highScore);
             newHighScoreMsg = "new high score!";
 
-            ofSetColor(255,0,255);
             font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 400);
             
             
-            ofSetColor(255,0,255);
            font.drawString(yourScoreMsg + highScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(highScoreMsg +yourScoreMsg)/2, 550);
             
             
             if (newHighScore) {
-                ofSetColor(0,0,255);
                 font.drawString(newHighScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(newHighScoreMsg)/2, 500);
             }
             else {
-            ofSetColor(0,0,255);
             font.drawString("TRY AGAIN?", ofGetScreenWidth()/2 - font.stringWidth("TRY AGAIN?")/2, 650);
             }
             
-            //when in GAME OVER mode, the background is a random grey scale.
-            //randomNum = (int) ofRandom(0,255);
-            //ofSetBackgroundColor(randomNum, randomNum, randomNum);
-           // ofSetBackgroundColor(0, 0, 0);
             
             //calculates all sparkle attract points>>>>>
             for(unsigned int p = 0; p < sparkles.size() ; p++) {
@@ -782,13 +719,10 @@ void ofApp::draw() {
                 sparkles2[p].draw();
                 
             }
-
-            
             
             break;
         case MODE_TRANSITION:
             break;
-
     }
     
     if(!hideGui)
@@ -800,12 +734,9 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::exit() {
-	kinect.setCameraTiltAngle(0); // zero the tilt on exit
+	//kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
 	
-#ifdef USE_TWO_KINECTS
-	kinect2.close();
-#endif
 }
 
 //--------------------------------------------------------------
@@ -858,9 +789,14 @@ void ofApp::keyPressed (int key) {
 			kinect.close();
 			break;
             
-       // case 'f':
-            ofToggleFullscreen();
-            ///ofHideCursor();
+        case 'm':
+            mirrorScreen = !mirrorScreen;
+            break;
+
+            case 'f':
+            //ofToggleFullscreen();
+            //ofHideCursor() = false;
+            break;
 
             
         case 'i':
