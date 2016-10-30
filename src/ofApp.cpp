@@ -93,14 +93,17 @@ void ofApp::setup() {
     resetGame();
     
 // setup GUI stuff
+
     hideGui = true;
+
+    
     
     gui.setup(); // most of the time this doesn't need a name
     
+    
     modeStartGlowRiseIntimacyFactor = 0.8;
     
-    /**
-     CHANGE DEFAULT VALUES FOR THINGS IN SLIDERS. The first number is the default value.
+    /**Here is where I CHANGE DEFAULT VALUES FOR THINGS IN SLIDERS. The first number is the default value.
      the next numbers are min and max.
      **/
 
@@ -123,6 +126,8 @@ void ofApp::setup() {
 }
 
 //-------------------- GUI LISTENERS ---------------------------
+
+
 void ofApp::modeStartGlowRiseIntimacyFactorListener (float & intimacyFactor) {
     modeStartGlowRiseIntimacyFactor = intimacyFactor;
 }
@@ -654,6 +659,8 @@ void ofApp::draw() {
     string yourScoreMsg = "";
     string highScoreMsg = "";
     string newHighScoreMsg = "";
+    string GUItext = "*i* for information \n\n *r*  restart \n\n *p* to play (skip intimacy building scene) \n\n *left arrow* for kinect threshold closer \n\n *right arrow* for kinect threshold farther \n\n *up arrow* for kinect up \n\n *down arrow* for kinect down \n\n *o* to go back to previous kinect tilt";
+
 
     
     switch(currScene ) {
@@ -725,9 +732,11 @@ void ofApp::draw() {
             break;
     }
     
-    if(!hideGui)
+    
+    if(!hideGui){
         gui.draw();
-
+        font.drawString(GUItext, 80, 100);
+    }
 }
 
 
@@ -793,9 +802,9 @@ void ofApp::keyPressed (int key) {
             mirrorScreen = !mirrorScreen;
             break;
 
-            case 'f':
-            //ofToggleFullscreen();
-            //ofHideCursor() = false;
+        case 'f':
+            ofToggleFullscreen();
+            ofHideCursor() = false;
             break;
 
             
