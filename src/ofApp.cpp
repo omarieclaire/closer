@@ -804,7 +804,7 @@ void ofApp::keyPressed (int key) {
 
         case 'f':
             ofToggleFullscreen();
-            ofHideCursor() = false;
+            ofHideCursor();
             break;
 
             
