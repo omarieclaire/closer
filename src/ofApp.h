@@ -169,7 +169,7 @@ public:
     ofParameter<int> farThreshold;
     
     // Constants that can be tweaked with sliders / gui (some of these may be obsolete)
-    bool hideInfo;
+    bool showInfo;
     float modeStartGlowRiseIntimacyFactor;
     float modePlayGlowRiseFactor;
     float modePlayGlowballWidthExponent;

@@ -424,6 +424,9 @@ void ofApp::resetGame(){
 //--------------------------------------------------------------
 void ofApp::draw() {
     
+    ofHideCursor();
+
+    
     if(mirrorScreen) {
         ofPushMatrix();
         ofScale(-1,1);
@@ -560,7 +563,7 @@ void ofApp::draw() {
     string yourScoreMsg = "";
     string highScoreMsg = "";
     string newHighScoreMsg = "";
-    string infoText = "*i* for information \n\n *r*  restart \n\n *p* to play (skip intimacy building scene) \n\n *left arrow* for kinect threshold closer \n\n *right arrow* for kinect threshold farther \n\n *up arrow* for kinect up \n\n *down arrow* for kinect down \n\n *o* to go back to previous kinect tilt";
+    string infoText = "*i* for information \n\n *m* for mirror screen \n\n *r*  restart \n\n *p* to play (skip intimacy building scene) \n\n *left arrow* for kinect threshold closer \n\n *right arrow* for kinect threshold farther \n\n *up & down arrows* for kinect up and down \n\n *o* to go back to previous kinect tilt";
 
 
     
@@ -634,7 +637,7 @@ void ofApp::draw() {
     }
     
     
-    if(hideInfo){
+    if(showInfo){
         font.drawString(infoText, 80, 100);
     }
 }
@@ -709,8 +712,7 @@ void ofApp::keyPressed (int key) {
             
         case 'i':
             bDrawDebug = !bDrawDebug;
-            hideInfo = !hideInfo;
-            ofHideCursor();
+            showInfo = !showInfo;
             break;
             
         case 'p':
@@ -728,9 +730,11 @@ void ofApp::keyPressed (int key) {
 			if(angle<-30) angle=-30;
 			kinect.setCameraTiltAngle(angle);
 			break;
+
         case '@':
             currScene = MODE_GAME_OVER;
             break;
+
         case 'r':
             currScene = MODE_START;
             break;
