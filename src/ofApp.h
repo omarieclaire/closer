@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
-#include "ofxGui.h"
 #include "demoParticle.h"
 #include "triangle.h"
 #include "trigrow.hpp"
@@ -41,27 +40,23 @@ public:
     void resetGame();
 
 	ofxKinect kinect;
-
-
     // kinect display related
-	ofxCvColorImage colorImg;
+	//ofxCvColorImage colorImg;
 	ofxCvGrayscaleImage grayImage; // grayscale depth image
 	ofxCvGrayscaleImage grayThreshNear; // the near thresholded image
 	ofxCvGrayscaleImage grayThreshFar; // the far thresholded image
-
 	ofxCvContourFinder contourFinder; // finding the countour of the players using the kinect
     
 	bool bThreshWithOpenCV; // determining how far away the kinect should look for players
     int angle; //determines the angle of the kinect
 
-    //scales the drawn image to size
-    ofPoint imageScale;
+    
+    ofPoint imageScale; //scales the drawn image to size
     
     //creating control for different "scenes"
     enum appScene{ MODE_TITLE_SCREEN, MODE_START, MODE_TRANSITION, MODE_PLAY, MODE_GAME_OVER};
-    
-    // current scene
-    appScene currScene;
+    appScene currScene;    // current scene
+
 
     //for sound player
     ofSoundPlayer synth;
@@ -74,14 +69,11 @@ public:
     float beatSpeed;
     float synth2Speed;
     float fillSpeed;
-    float saxSpeed;
-    float sampleSpeed;
     float popSpeed;
 
     // distance between the players
     float playerDistance;
 
-    
     //center of player blob, unblended
     ofPoint blobCenter1;
     ofPoint blobCenter2;
@@ -126,7 +118,7 @@ public:
     ofColor triangleInteriorColor;
     ofColor starColor;
     
-    // Transperancy
+    // Transparancy
     int glowballTransperancy;
     int triangleInteriorTransperancy;
     
@@ -168,35 +160,21 @@ public:
     // postition of glowBall
     ofVec3f glowBall;
     
-    //WHERE WE STOPPED COMMENTING
-    
-    // The gui
-    ofxPanel gui;
-    
-    // Constants that can be tweaked with sliders / gui
+    // for flipping the screen for setup reasons
     bool mirrorScreen = false;
-
-    bool hideGui;
-    float modeStartGlowRiseIntimacyFactor;
-    float modePlayGlowRiseFactor;
-    float modePlayGlowballWidthExponent;
+   
     
-    // Sliders for the gui
-    ofxFloatSlider modeStartGlowRiseIntimacyFactorSlider;
-    ofxFloatSlider modePlayGlowRiseFactorSlider;
-    ofxFloatSlider modePlayGlowballWidthExponentSlider;
+    //sliders for the obsolete gui
     ofParameter<int> nearThreshold;
     ofParameter<int> farThreshold;
     
-    // Listeners for the sliders and gui stuff
-    void modeStartGlowRiseIntimacyFactorListener (float & intimacyFactor);
-    void modePlayGlowRiseFactorListener (float & factor);
-    void modePlayGlowballWidthExponentListener ( float & exponent);
-    
+    // Constants that can be tweaked with sliders / gui (some of these may be obsolete)
+    bool hideInfo;
+    float modeStartGlowRiseIntimacyFactor;
+    float modePlayGlowRiseFactor;
+    float modePlayGlowballWidthExponent;
     bool bDrawDebug;
     
     ofTrueTypeFont font;
-
-
     
 };

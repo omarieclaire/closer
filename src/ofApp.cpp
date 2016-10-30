@@ -18,7 +18,6 @@ void ofApp::setup() {
     //kinect.init();
     //kinect.init(true); // shows infrared instead of RGB video image
     kinect.init(false, false); // disable video image (faster fps)
-    
     kinect.open();		// opens first available kinect
     
     // print the intrinsic IR sensor values
@@ -30,20 +29,20 @@ void ofApp::setup() {
     }
     
     // allocate space for images
-    colorImg.allocate(kinect.width, kinect.height);
+    //colorImg.allocate(kinect.width, kinect.height);
     grayImage.allocate(kinect.width, kinect.height);
     grayThreshNear.allocate(kinect.width, kinect.height);
     grayThreshFar.allocate(kinect.width, kinect.height);
     
     nearThreshold = 230;
-    farThreshold = 196;//70;
+    farThreshold = 196;
     bThreshWithOpenCV = true;
     
     ofSetFrameRate(60);
     
     // zero the tilt on startup
-    // angle = 0;
-    // kinect.setCameraTiltAngle(angle);
+     angle = 0;
+     kinect.setCameraTiltAngle(angle);
     
     
     font.load("Ayuthaya", 22);
@@ -58,7 +57,6 @@ void ofApp::setup() {
     synth.setMultiPlay(true);
     synth.play();
     
-    
     beat.load("sounds/beat.wav");
     beat.setLoop(true);
     beat.setVolume(0.2f);
@@ -66,11 +64,9 @@ void ofApp::setup() {
     beat.setMultiPlay(true);
     beat.play();
     
-
     synth2.load("sounds/closerPoint.mp3");
     synth2.setVolume(1.0f);
     synth.setSpeed(1.0f);
-
 
     fill.load("sounds/death2.mp3");
     fill.setVolume(0.50f);
@@ -92,57 +88,14 @@ void ofApp::setup() {
 //reset Game
     resetGame();
     
-// setup GUI stuff
-
-    hideGui = true;
-
-    
-    
-    gui.setup(); // most of the time this doesn't need a name
-    
-    
     modeStartGlowRiseIntimacyFactor = 0.8;
-    
-    /**Here is where I CHANGE DEFAULT VALUES FOR THINGS IN SLIDERS. The first number is the default value.
-     the next numbers are min and max.
-     **/
-
-    // start mode (pre-game) intimacy level needed to rise
-    gui.add(modeStartGlowRiseIntimacyFactorSlider.setup("MS: glowrise IF", 0.8, 0.5, 1.5));
-
-    // play level intimacy level needed to [wait, this might be obsolete]
-    gui.add(modePlayGlowRiseFactorSlider.setup("MP: glowrise F", 0.003, 0, 0.01));
-    gui.add(modePlayGlowballWidthExponentSlider.setup("MP: glowball Exp", 2, 0, 3));
-    gui.add(nearThreshold.set("near Thresh",255,0,255));
-    gui.add(farThreshold.set("near Thresh",99,0,255));
-
-    modeStartGlowRiseIntimacyFactorSlider.addListener(this, &ofApp::modeStartGlowRiseIntimacyFactorListener);
-    modePlayGlowRiseFactorSlider.addListener(this, &ofApp::modePlayGlowRiseFactorListener);
-    modePlayGlowRiseFactorSlider.addListener(this, &ofApp::modePlayGlowballWidthExponentListener);
-
     timeGameOverSceneStarted = 0;
     
     highScore = 0;
 }
 
-//-------------------- GUI LISTENERS ---------------------------
-
-
-void ofApp::modeStartGlowRiseIntimacyFactorListener (float & intimacyFactor) {
-    modeStartGlowRiseIntimacyFactor = intimacyFactor;
-}
-
-void ofApp::modePlayGlowRiseFactorListener (float & factor) {
-    modePlayGlowRiseFactor = factor;
-}
-
-void ofApp::modePlayGlowballWidthExponentListener(float & exponent) {
-    modePlayGlowballWidthExponent = exponent;
-}
-
 //--------------------------------------------------------------
 void ofApp::update() {
-	
 	
     kinect.update();
     
@@ -168,11 +121,9 @@ void ofApp::update() {
         contourFinder.findContours(grayImage, 10, (kinect.width*kinect.height)/2, 20, false);
     }
     
-    
     //scales the drawn image so to size
     imageScale.x = ofGetWidth() / kinect.getWidth();
     imageScale.y = ofGetHeight() / kinect.getHeight();
-
     
     //find how many blobs there are?
     if(contourFinder.nBlobs > 0 ){
@@ -188,7 +139,6 @@ void ofApp::update() {
             blobCenter2 = tempCent;
         }
 
-        
         //replace blobcenter with global
         blendCenter1 = 0.8 * blendCenter1 + 0.2 * blobCenter1;
         blendCenter2 = 0.8 * blendCenter2 + 0.2 * blobCenter2;
@@ -254,39 +204,18 @@ void ofApp::update() {
                 sparkles2[p].setAttractPoint(blobCenter2);
             }
             sparkles2[p].update();
-
         }
-
         
         //SOUND: COUNTER
         
         if(ofGetFrameNum() % 60 == 0){
-            
             // SOUND: changes speed of sound to match map
-            //synthSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
-            //synth.setSpeed(synthSpeed);
-            
+    
             beatSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 2.0f, 0.2f);
             beat.setSpeed(beatSpeed);
             
             popSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
             pop.setSpeed(popSpeed);
-            
-            /*
-             synth2Speed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
-             synth2.setSpeed(synth2Speed);
-             
-             fillSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 2.0f, 0.2f);
-             fill.setSpeed(fillSpeed);
-             
-             saxSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 0.2f, 2.5f);
-             sax.setSpeed(saxSpeed);
-             
-             sampleSpeed = ofMap(playerDistance, 100.0f, 1200.0f, 2.0f, 0.2f);
-             sample.setSpeed(sampleSpeed);
-             
-             */
-            
         }
         
     } else {
@@ -296,7 +225,7 @@ void ofApp::update() {
     // determine which scene we go to
     
     /*
-     * The triangle speed gets faster as the score rises, making the game more difficult as you play. Had to define it here because can't create variables within a switch statement (why?) 
+     * The triangle speed gets faster as the score rises, making the game more difficult as you play. Had to define it here because can't create variables within a switch statement
      */
     float triangleSpeedIncrease;
     
@@ -327,8 +256,6 @@ void ofApp::update() {
                 fill.play();
                     currScene = MODE_GAME_OVER;
                     timeGameOverSceneStarted = ofGetElapsedTimeMillis();
-//                    sparkles.clear();
-
             }
 
             scoreCounter = scoreCounter + 0.1;
@@ -363,7 +290,6 @@ void ofApp::update() {
             if(level.doesIntersectStar(glowBall, glowBallWidth)) {
                 synth2.play();
                 scoreCounter += 100;
-
             }
             
             if(level.doesIntersectTriangle(glowBall,glowBallWidth)) {
@@ -394,12 +320,10 @@ void ofApp::resetGame(){
     blendCenter1.set(0,0);
     blendCenter2.set(0,0);
     
-    //Set the scene (don't need to otherwise setup
+    //Set the scene (don't need to otherwise setup)
     currScene = MODE_TITLE_SCREEN;
     
     // reset colours
-    
-    //glowballColor.set(0,0,255,90);
     glowballColor.set(0,0,255);
     glowballSparklesColor.set(0,0,255);
     peopleBlobColor.set(255,0,255,10);
@@ -409,8 +333,6 @@ void ofApp::resetGame(){
     triangleInteriorColor.set(255,0,255);
     starColor.set(0,0,255);
 
-
-    
     
     // Reset the sparkles
     for(unsigned int i = 0 ; i < sparkles.size() ; i++) {
@@ -479,7 +401,6 @@ void ofApp::resetGame(){
     // Set color of triangles
     level.setTrianglesColor(triangleInteriorColor, triangleOutlineColor);
     
-    
     // Create the stars based on the locations of the triangles.
     level.createStars();
     
@@ -498,7 +419,6 @@ void ofApp::resetGame(){
     badCollision = 0;
     
     ofResetElapsedTimeCounter();
-    
 }
 
 //--------------------------------------------------------------
@@ -514,7 +434,7 @@ void ofApp::draw() {
     if(currScene == MODE_TITLE_SCREEN){
         ofSetBackgroundColor(0, 0, 0);
 
-    //START MODE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    //START
     } else if(currScene == MODE_START){
         
         ofSetBackgroundColor(0, 0, 0);
@@ -525,14 +445,11 @@ void ofApp::draw() {
         ofSetColor(peopleOutlineColor);
         contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false,peopleOutlineColor);
         //contourFinder.draw(10, 320, 400, 300);
-        //grayImage.draw(0,0);
         ofEasyCam easyCam;
         
         //!looks for the centre in the two biggest blobs
         if(contourFinder.nBlobs > 0 ){
             
-            //ofDrawCircle(getBlobCenter1.x, getBlobCenter1.y, 10);
-            //ofDrawCircle(getBlobCenter2.x, getBlobCenter2.y, 10);
             ofDrawLine(blobCenter1.x, blobCenter1.y, blobCenter2.x, blobCenter2.y);
             
             //instructions
@@ -540,14 +457,12 @@ void ofApp::draw() {
             
             
             // draw circles of mass for each blob
-            //ofSetColor(255,85);
             ofSetColor(peopleBlobColor);
             ofDrawCircle(blendCenter1.x, blendCenter1.y, radiusOfBlob1);
             ofDrawCircle(blendCenter2.x, blendCenter2.y, radiusOfBlob2);
             
             
             // draws the glowball between blobs (also, in update the glowball rise is calculated)
-            //ofSetColor(255,90);
             ofSetColor(glowballColor);
             if (intimacyCounter >= 100) {
                 //TODO: investigate here
@@ -577,30 +492,17 @@ void ofApp::draw() {
             }
             
             ofDrawLine(0, 20, ofGetScreenWidth(), 20);
-            
         }
-        
-        
-//TRANSITION>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-        
-//PLAY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
         
     }else if(currScene == MODE_PLAY){
         
-        //GLOWBALL: COUNTER
-        
-        
         level.draw();
-        
-        //ofSetColor(255,80);
         ofSetColor(glowballColor);
         ofDrawCircle(glowBall.x, glowBall.y, glowBallWidth);
         
         for(unsigned int p = 0; p < sparkles.size() ; p++) {
             if (p < intimacyCounter) {
-                //sparkles[p].setColour(0,0,255);
                 sparkles[p].setColor(glowballSparklesColor);
             } else {
                 sparkles[p].setColor(peopleSparklesColor);
@@ -610,7 +512,6 @@ void ofApp::draw() {
         
         for(unsigned int p = 0; p < sparkles2.size() ; p++) {
             if (p < intimacyCounter) {
-                //sparkles[p].setColour(0,0,255);
                 sparkles[p].setColor(glowballSparklesColor);
             } else {
                 sparkles[p].setColor(peopleSparklesColor);
@@ -659,7 +560,7 @@ void ofApp::draw() {
     string yourScoreMsg = "";
     string highScoreMsg = "";
     string newHighScoreMsg = "";
-    string GUItext = "*i* for information \n\n *r*  restart \n\n *p* to play (skip intimacy building scene) \n\n *left arrow* for kinect threshold closer \n\n *right arrow* for kinect threshold farther \n\n *up arrow* for kinect up \n\n *down arrow* for kinect down \n\n *o* to go back to previous kinect tilt";
+    string infoText = "*i* for information \n\n *r*  restart \n\n *p* to play (skip intimacy building scene) \n\n *left arrow* for kinect threshold closer \n\n *right arrow* for kinect threshold farther \n\n *up arrow* for kinect up \n\n *down arrow* for kinect down \n\n *o* to go back to previous kinect tilt";
 
 
     
@@ -733,9 +634,8 @@ void ofApp::draw() {
     }
     
     
-    if(!hideGui){
-        gui.draw();
-        font.drawString(GUItext, 80, 100);
+    if(hideInfo){
+        font.drawString(infoText, 80, 100);
     }
 }
 
@@ -804,13 +704,13 @@ void ofApp::keyPressed (int key) {
 
         case 'f':
             ofToggleFullscreen();
-            ofHideCursor();
             break;
 
             
         case 'i':
             bDrawDebug = !bDrawDebug;
-            hideGui = !hideGui;
+            hideInfo = !hideInfo;
+            ofHideCursor();
             break;
             
         case 'p':
