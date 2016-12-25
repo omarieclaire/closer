@@ -176,5 +176,7 @@ public:
     bool bDrawDebug;
     
     ofTrueTypeFont font;
+    ofTrueTypeFont fontTwo;
+
     
 };

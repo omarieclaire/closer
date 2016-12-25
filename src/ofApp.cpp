@@ -37,7 +37,9 @@ void ofApp::setup() {
     grayThreshFar.allocate(kinect.width, kinect.height);
     
     nearThreshold = 230;
-    farThreshold = 196;
+    //farThreshold = 196;
+    farThreshold = 96;
+
     bThreshWithOpenCV = true;
     
     ofSetFrameRate(60);
@@ -47,7 +49,9 @@ void ofApp::setup() {
      kinect.setCameraTiltAngle(angle);
     
     
-    font.load("Ayuthaya", 22);
+    font.load("Ayuthaya", 26);
+    fontTwo.load("Ayuthaya", 60);
+
 
     
     //sounds
@@ -449,7 +453,7 @@ void ofApp::draw() {
         //kinect.draw(420, 10, 400, 300);
         ofSetColor(peopleOutlineColor);
         contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false,peopleOutlineColor);
-        //contourFinder.draw(10, 320, 400, 300);
+
         ofEasyCam easyCam;
         
         //!looks for the centre in the two biggest blobs
@@ -496,7 +500,7 @@ void ofApp::draw() {
                 sparkles2[p].draw();
             }
             
-            ofDrawLine(0, 20, ofGetScreenWidth(), 20);
+//            ofDrawLine(0, 20, ofGetScreenWidth(), 20);
         }
 
         
@@ -535,7 +539,7 @@ void ofApp::draw() {
         }
     }
     
-    contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false,peopleOutlineColor);
+    contourFinder.draw(0, 0, ofGetWidth(), ofGetHeight(), false, peopleOutlineColor);
     
     if (bDrawDebug == true) {
         grayImage.draw(0,0,320,240);
@@ -557,10 +561,32 @@ void ofApp::draw() {
     int randomNum;
     
     string title = "CLOSER";
-    string introMsg = "for two players";
-    string noTouch = "no touching";
-    string instruct = "stand close together to begin";
-    string instruct2 = "the ball must avoid the spikes";
+
+    
+    //German instructions
+/*    string subTitle = "ein kooperatives Spiel für zwei Spieler";
+    string rulesOne = "Haltet den blauen Ball entfernt von den pinken Wänden";
+    string rulesOne = "Lasst den blauen Ball nicht die Wände berühren.";
+    string rulesTwo = "Bewegt euch um den Ball zu bewegen";
+    string rulesTwo = "Bewegt euch nach links und rechts, um den";
+    string rulesThree = "Kommt näher zusammen und der Ball wird größer";
+    string rulesThree = "Ball zu bewegen und die Größe zu ändern.";
+    string rulesFour = "Vorsicht: Berührt euch nicht und bleibt auf der Linie!"; */
+
+    //German alt instructions
+
+    
+    //English instructions
+
+    string subTitle = "a cooperative game for two players";
+    string rulesOne = "keep the blue ball safe from the pink triangles";
+    string rulesTwo = "move your bodies to move and grow the ball ";
+    string rulesFour = "no touching!";
+
+//    string rulesThree = "move your bodies together to grow the ball";
+//    string noTouch = "no touching";
+//    string instruct = "stand together to begin";
+//    string instruct2 = "the ball must avoid the spikes";
     string gameOverMsg = "";
     string yourScoreMsg = "";
     string highScoreMsg = "";
@@ -572,29 +598,30 @@ void ofApp::draw() {
     switch(currScene ) {
         case MODE_TITLE_SCREEN:
             ofSetColor(255, 0, 255);
-
-            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 80);
- 
-            ofSetColor(0, 0, 255);
-            font.drawString(introMsg, ofGetScreenWidth()/2 - font.stringWidth(introMsg)/2, 660);
+            fontTwo.drawString(title, ofGetScreenWidth()/2 - fontTwo.stringWidth(title)/2, 160);
+            font.drawString(subTitle, ofGetScreenWidth()/2 - font.stringWidth(subTitle)/2, 210);
+            ofSetColor(0, 255, 0);
+            font.drawString(rulesOne, ofGetScreenWidth()/2 - font.stringWidth(rulesOne)/2, 450);
+            font.drawString(rulesTwo, ofGetScreenWidth()/2 - font.stringWidth(rulesTwo)/2, 560);
+//            font.drawString(rulesThree, ofGetScreenWidth()/2 - font.stringWidth(rulesThree)/2, 620);
+            font.drawString(rulesFour, ofGetScreenWidth()/2 - font.stringWidth(rulesFour)/2, 680);
             break;
         case MODE_START:
-            
             ofSetColor(255, 0, 255);
-
-            font.drawString(title, ofGetScreenWidth()/2 - font.stringWidth(title)/2, 80);
-            
-            ofSetColor(0, 0, 255);
-            font.drawString(noTouch, ofGetScreenWidth()/2 - font.stringWidth(noTouch)/2, 660);
-
-            font.drawString(instruct, ofGetScreenWidth()/2 - font.stringWidth(instruct)/2, 700);
+            fontTwo.drawString(title, ofGetScreenWidth()/2 - fontTwo.stringWidth(title)/2, 160);
+            font.drawString(subTitle, ofGetScreenWidth()/2 - font.stringWidth(subTitle)/2, 210);
+            ofSetColor(0, 255, 0);
+            font.drawString(rulesOne, ofGetScreenWidth()/2 - font.stringWidth(rulesOne)/2, 450);
+            font.drawString(rulesTwo, ofGetScreenWidth()/2 - font.stringWidth(rulesTwo)/2, 560);
+//            font.drawString(rulesThree, ofGetScreenWidth()/2 - font.stringWidth(rulesThree)/2, 620);
+            font.drawString(rulesFour, ofGetScreenWidth()/2 - font.stringWidth(rulesFour)/2, 680);
             break;
         case MODE_PLAY:
 
             ofSetColor(0, 255, 0);
-            font.drawString(ofToString( (int) scoreCounter), ofGetScreenWidth()/2 + 10, 700);
+            font.drawString(ofToString( (int) scoreCounter), ofGetScreenWidth()/2 + 10, 160);
             ofSetColor(0, 0, 255);
-            font.drawString(instruct2, ofGetScreenWidth()/2 - font.stringWidth(instruct2)/2, 750);
+//            font.drawString(instruct2, ofGetScreenWidth()/2 - font.stringWidth(instruct2)/2, 750);
             break;
         case MODE_GAME_OVER:
             ofSetColor(255, 0, 255);
@@ -604,7 +631,7 @@ void ofApp::draw() {
             highScoreMsg = " :: high score " + ofToString((int) highScore);
             newHighScoreMsg = "new high score!";
 
-            font.drawString(gameOverMsg, ofGetScreenWidth()/2 - font.stringWidth(gameOverMsg)/2, 400);
+            fontTwo.drawString(gameOverMsg, ofGetScreenWidth()/2 - fontTwo.stringWidth(gameOverMsg)/2, 400);
             
             
            font.drawString(yourScoreMsg + highScoreMsg, ofGetScreenWidth()/2 - font.stringWidth(highScoreMsg +yourScoreMsg)/2, 550);
